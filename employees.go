@@ -3,7 +3,6 @@ package striven
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 
 	"gopkg.in/resty.v1"
 )
@@ -14,8 +13,8 @@ type Employee struct {
 	Name            string `json:"name"`
 	Email           string `json:"email"`
 	IsSystemuser    bool   `json:"isSystemUser"`
-	DateCreated     time.Time
-	LastUpdatedDate time.Time
+	DateCreated     string `json:"dateCreated"`
+	LastUpdatedDate string `json:"lastUpdatedDate"`
 }
 
 // Employees is the structure for employees in Striven.
