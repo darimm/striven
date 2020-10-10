@@ -9,7 +9,7 @@ import (
 )
 
 // Employee is the structure for a single employee in Striven.
-type Employee struct {
+type Employee []struct {
 	ID              int    `json:"id"`
 	Name            string `json:"name"`
 	Email           string `json:"email"`
@@ -19,11 +19,11 @@ type Employee struct {
 }
 
 // EmployeesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-employees
-func (s *Striven) EmployeesGet() ([]Employee, error) {
+func (s *Striven) EmployeesGet() (Employee, error) {
 	err := s.validateAccessToken()
 	if err != nil {
 		fmt.Println("Failed to Validate Access Token")
-		return []Employee{}, err
+		return Employee{}, err
 	}
 	client := resty.New()
 	resp, err := client.R().
@@ -34,9 +34,9 @@ func (s *Striven) EmployeesGet() ([]Employee, error) {
 	if resp.StatusCode() != 200 || err != nil {
 		fmt.Println("REST Request to Striven API failed")
 		fmt.Printf("Error code %d", resp.StatusCode())
-		return []Employee{}, err
+		return Employee{}, err
 	}
-	var r []Employee
+	var r Employee
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
 		fmt.Println("JSON Unmarshal failed")
