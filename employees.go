@@ -22,6 +22,7 @@ type Employee struct {
 func (s *Striven) EmployeesGet() ([]Employee, error) {
 	err := s.validateAccessToken()
 	if err != nil {
+		fmt.Println("Failed to Validate Access Token")
 		return []Employee{}, err
 	}
 	client := resty.New()
@@ -31,9 +32,14 @@ func (s *Striven) EmployeesGet() ([]Employee, error) {
 		Get(fmt.Sprintf("%sv1/employees", StrivenURL))
 
 	if resp.StatusCode() != 200 || err != nil {
+		fmt.Println("REST Request to Striven API failed")
+		fmt.Printf("Error code %d", resp.StatusCode())
 		return []Employee{}, err
 	}
 	var r []Employee
-	json.Unmarshal([]byte(resp.Body()), &r)
+	err = json.Unmarshal([]byte(resp.Body()), &r)
+	if err != nil {
+		fmt.Println("JSON Unmarshal failed")
+	}
 	return r, nil
 }
