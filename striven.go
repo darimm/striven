@@ -31,14 +31,9 @@ func New(ID string, Secret string) *Striven {
 	s := &Striven{
 		ClientID:     ID,
 		ClientSecret: Secret,
-		Token: strivenToken{
-			AccessToken:    "INVALID",
-			RefreshToken:   "INVALID",
-			ExpiresIn:      "",
-			ExpirationTime: time.Time{},
-		},
+		Token:        strivenToken{},
 	}
-	s.Token.ExpirationTime = time.Now().Add(-48 * time.Hour)
+	s.initializeToken()
 	return s
 }
 
