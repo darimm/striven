@@ -8,6 +8,7 @@ APIs Implemented (Checkmark means Completely implemented)
 
 - [X] Access Tokens
 - [ ] Customers
+- [X] Employees
 
 APIs Not Implemented
 
@@ -19,7 +20,6 @@ APIs Not Implemented
 - [ ] CreditMemos
 - [ ] CustomerAssets
 - [ ] CustomList
-- [ ] Employees
 - [ ] Formats
 - [ ] GLAcconuts
 - [ ] GLCategories
