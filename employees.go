@@ -3,12 +3,13 @@ package striven
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"gopkg.in/resty.v1"
 )
 
-// Employee is the structure for a single Employee
-type Employee struct {
+// rawEmployee is the structure for a single Employee returned from the API
+type rawEmployee struct {
 	ID              int    `json:"id"`
 	Name            string `json:"name"`
 	Email           string `json:"email"`
@@ -17,15 +18,25 @@ type Employee struct {
 	LastUpdatedDate string `json:"lastUpdatedDate"`
 }
 
-// Employees is the structure for employees in Striven.
-type Employees []Employee
+// Employee is the structure for a single Employee
+type Employee struct {
+	ID              int    `json:"id"`
+	Name            string `json:"name"`
+	Email           string `json:"email"`
+	IsSystemuser    bool   `json:"isSystemUser"`
+	DateCreated     time.Time
+	LastUpdatedDate time.Time
+}
 
-// EmployeesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-employees
-func (s *Striven) EmployeesGet() (Employees, error) {
+// Employees is the structure for employees in Striven.
+type Employees []rawEmployee
+
+// EmployeesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-employees Time is returned in UTC
+func (s *Striven) EmployeesGet() ([]Employee, error) {
 	err := s.validateAccessToken()
 	if err != nil {
 		fmt.Println("Failed to Validate Access Token")
-		return Employees{}, err
+		return []Employee{}, err
 	}
 	client := resty.New()
 	resp, err := client.R().
@@ -34,14 +45,27 @@ func (s *Striven) EmployeesGet() (Employees, error) {
 		Get(fmt.Sprintf("%sv1/employees", StrivenURL))
 
 	if resp.StatusCode() != 200 || err != nil {
-		fmt.Println("REST Request to Striven API failed")
-		fmt.Printf("Error code %d", resp.StatusCode())
-		return Employees{}, err
+		return []Employee{}, fmt.Errorf("Response Status Code: %d, Error retrieving Refresh Token", resp.StatusCode())
 	}
-	var r Employees
-	err = json.Unmarshal([]byte(resp.Body()), &r)
+	var e Employees
+	err = json.Unmarshal([]byte(resp.Body()), &e)
 	if err != nil {
-		fmt.Println("JSON Unmarshal failed")
+		return []Employee{}, err
+	}
+
+	var r []Employee
+	for _, v := range e {
+		dc, _ := time.Parse(time.RFC3339Nano, fmt.Sprintf("%sZ", v.DateCreated))
+		lu, _ := time.Parse(time.RFC3339Nano, fmt.Sprintf("%sZ", v.LastUpdatedDate))
+		r = append(r, Employee{
+			ID:              v.ID,
+			Name:            v.Name,
+			Email:           v.Email,
+			IsSystemuser:    v.IsSystemuser,
+			DateCreated:     dc,
+			LastUpdatedDate: lu,
+		})
+
 	}
 	return r, nil
 }
