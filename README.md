@@ -28,44 +28,44 @@ Current Status: Incomplete.
 
 APIs Implemented (Checkmark means Completely implemented)
 
-- [X] Access Tokens
+- [X] Access Tokens  
 striven.New(CustomerID,CustomerSecret)
-- [X] Classes
+- [X] Classes  
 ClassesGet() implements https://api.striven.com/v1/classes
-- [ ] Customers
+- [ ] Customers  
 CustomersGetContentGroups(clientID int) implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups
-- [X] CustomList
+- [X] CustomList  
 CustomListsGet() implements https://api.striven.com/v1/custom-lists
 CustomListItemsGet(ListID int) implements https://api.striven.com/v1/custom-lists/{ListID}/list-items
-- [X] Employees
+- [X] Employees  
 EmployeesGet() implements https://api.striven.com/v1/employees
 
 APIs Not Implemented
 
-- [ ] BillCredits
-- [ ] Bills
-- [ ] Categories
-- [ ] Contacts
-- [ ] CreditMemos
-- [ ] CustomerAssets
-- [ ] Formats
-- [ ] GLAcconuts
-- [ ] GLCategories
-- [ ] Industries
-- [ ] InventoryLocations
-- [ ] Invoices
-- [ ] Items
-- [ ] ItemTypes
-- [ ] JournalEntries
-- [ ] Opportunities
-- [ ] Payments
-- [ ] PaymentTerms
-- [ ] Pools
-- [ ] Purchase Orders
-- [ ] ReferralSources
-- [ ] SalesOrders
-- [ ] SalesOrderTypes
-- [ ] ShippingMethods
-- [ ] Tasks
-- [ ] UserInfo
-- [ ] Vendors
+- [ ] BillCredits  
+- [ ] Bills  
+- [ ] Categories  
+- [ ] Contacts  
+- [ ] CreditMemos  
+- [ ] CustomerAssets  
+- [ ] Formats  
+- [ ] GLAcconuts  
+- [ ] GLCategories  
+- [ ] Industries  
+- [ ] InventoryLocations  
+- [ ] Invoices  
+- [ ] Items  
+- [ ] ItemTypes  
+- [ ] JournalEntries  
+- [ ] Opportunities  
+- [ ] Payments  
+- [ ] PaymentTerms  
+- [ ] Pools  
+- [ ] Purchase Orders  
+- [ ] ReferralSources  
+- [ ] SalesOrders  
+- [ ] SalesOrderTypes  
+- [ ] ShippingMethods  
+- [ ] Tasks  
+- [ ] UserInfo  
+- [ ] Vendors  
