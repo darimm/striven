@@ -57,7 +57,10 @@ Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-cont
 - [X] ReferralSources  
 `ReferralSourcesGet()` implements https://api.striven.com/Help/Api/GET-v1-referral-sources  
 - [X] SalesOrderTypes 
-`SalesOrderTypesGet()` implements https://api.striven.com/Help/Api/GET-v1-sales-order-types_excludeContractManagedTypes
+`SalesOrderTypesGet(excludeContractManagedTypes bool)` implements https://api.striven.com/Help/Api/GET-v1-sales-order-types_excludeContractManagedTypes  
+- [X] ShippingMethods  
+`ShippingMethodsGet()` implements https://api.striven.com/Help/Api/GET-v1-shipping-methods  
+
 
 APIs Not Implemented
 
@@ -75,7 +78,6 @@ APIs Not Implemented
 - [ ] Payments  
 - [ ] Purchase Orders  
 - [ ] SalesOrders  
-- [ ] ShippingMethods  
 - [ ] Tasks  
 - [ ] UserInfo  
 - [ ] Vendors  

@@ -9,7 +9,7 @@ import (
 type Pool struct {
 	ID        int    `json:"id"`
 	Name      string `json:"name"`
-	IsDefault bool   `json:"active"`
+	IsDefault bool   `json:"isDefault"`
 }
 
 // Pools is the collection of Pool needed to return all available Pools
