@@ -34,6 +34,7 @@ APIs Implemented (Checkmark means Completely implemented)
 `ClassesGet()` implements https://api.striven.com/v1/classes  
 - [ ] Customers  
 `CustomersGetContentGroups(clientID int)` implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups  
+Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-content-groups-groupId-documents exists, but needs some updating to be clear on it's use.  
 - [X] CustomList  
 `CustomListsGet()` implements https://api.striven.com/v1/custom-lists  
 `CustomListItemsGet(ListID int)` implements https://api.striven.com/v1/custom-lists/{ListID}/list-items  
@@ -41,6 +42,10 @@ APIs Implemented (Checkmark means Completely implemented)
 `EmployeesGet()` implements https://api.striven.com/v1/employees  
 - [X] Formats  
 `InvoiceFormatsGet()` implements https://api.striven.com/Help/Api/GET-v1-invoice-formats  
+- [X] GLCategories  
+`GLCategoriesGet()` implements https://api.striven.com/Help/Api/GET-v1-glcategories
+- [X] ItemTypes  
+`ItemTypesGet()` implements https://api.striven.com/Help/Api/GET-v1-item-types  
 
 
 APIs Not Implemented
@@ -52,12 +57,11 @@ APIs Not Implemented
 - [ ] CreditMemos  
 - [ ] CustomerAssets  
 - [ ] GLAcconuts  
-- [ ] GLCategories  
+
 - [ ] Industries  
 - [ ] InventoryLocations  
 - [ ] Invoices  
 - [ ] Items  
-- [ ] ItemTypes  
 - [ ] JournalEntries  
 - [ ] Opportunities  
 - [ ] Payments  

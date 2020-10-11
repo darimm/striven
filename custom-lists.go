@@ -26,7 +26,7 @@ type CustomListItems struct {
 	}
 }
 
-// CustomListsGet returns a list of Hub content groups for a given Client.
+// CustomListsGet returns a list of available Custom Lists used in the system.
 func (s *Striven) CustomListsGet() (CustomLists, error) {
 
 	resp, err := s.apiGet("v1/custom-lists")
@@ -39,7 +39,7 @@ func (s *Striven) CustomListsGet() (CustomLists, error) {
 	return r, nil
 }
 
-// CustomListItemsGet returns a list of Hub content groups for a given Client.
+// CustomListItemsGet returns a list of items in a specific custom list specified by listID
 func (s *Striven) CustomListItemsGet(listID int) (CustomListItems, error) {
 	resp, err := s.apiGet(fmt.Sprintf("v1/custom-lists/%d/list-items", listID))
 	if err != nil {

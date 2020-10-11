@@ -19,7 +19,7 @@ type Classes struct {
 	}
 }
 
-// ClassesGet returns a list of Hub content groups for a given Client.
+// ClassesGet returns a list of available Classes
 func (s *Striven) ClassesGet() (Classes, error) {
 
 	resp, err := s.apiGet("v1/classes")
