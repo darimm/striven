@@ -29,16 +29,16 @@ Current Status: Incomplete.
 APIs Implemented (Checkmark means Completely implemented)
 
 - [X] Access Tokens  
-striven.New(CustomerID,CustomerSecret)
+`striven.New(CustomerID,CustomerSecret)` implements https://api.striven.com/v1/apitoken
 - [X] Classes  
-ClassesGet() implements https://api.striven.com/v1/classes
+`ClassesGet()` implements https://api.striven.com/v1/classes
 - [ ] Customers  
-CustomersGetContentGroups(clientID int) implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups
+`CustomersGetContentGroups(clientID int)` implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups
 - [X] CustomList  
-CustomListsGet() implements https://api.striven.com/v1/custom-lists
-CustomListItemsGet(ListID int) implements https://api.striven.com/v1/custom-lists/{ListID}/list-items
+`CustomListsGet()` implements https://api.striven.com/v1/custom-lists
+`CustomListItemsGet(ListID int)` implements https://api.striven.com/v1/custom-lists/{ListID}/list-items
 - [X] Employees  
-EmployeesGet() implements https://api.striven.com/v1/employees
+`EmployeesGet()` implements https://api.striven.com/v1/employees
 
 APIs Not Implemented
 
