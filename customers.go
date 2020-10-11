@@ -19,16 +19,8 @@ type CustomersHubContentGroupResult struct {
 
 // CustomersGetContentGroups returns a list of Hub content groups for a given Client.
 func (s *Striven) CustomersGetContentGroups(clientID int) (CustomersHubContentGroupResult, error) {
-	err := s.validateAccessToken()
-	if err != nil {
-		return CustomersHubContentGroupResult{}, err
-	}
-	client := resty.New()
-	resp, err := client.R().
-		SetAuthToken(s.Token.AccessToken).
-		SetHeader("Content-Type", "application/json").
-		Get(fmt.Sprintf("%sv1/customers/%d/hub/content-groups", StrivenURL, clientID))
 
+	resp, err := s.apiGet(fmt.Sprintf("v1/customers/%d/hub/content-groups", clientID))
 	if resp.StatusCode() != 200 || err != nil {
 		return CustomersHubContentGroupResult{}, err
 	}
@@ -111,6 +103,7 @@ func NewCustomersHubDoc(opts ...CustomersHubDocOption) *CustomersHubDoc {
 	return n
 }
 
+//TODO: This should be a method of the CustomersHubDoc struct.
 //UploadClientHubFile is the function to Upload a document to a Client Hub
 func (s *Striven) UploadClientHubFile(chd *CustomersHubDoc, remoteFileName string, localFilePath string) (int, error) {
 	var overwrite string = "true"
