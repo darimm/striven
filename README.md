@@ -1,7 +1,7 @@
 Golang implementation of the Striven API ( https://api.striven.com ) 
 This project is in no way officially affiliated with Striven.
 
-Example Code: 
+Example Code (Note - this is very bad form. Do not put your API IDs and Secret in your code): 
 ```
 package main
 
@@ -43,7 +43,11 @@ Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-cont
 - [X] Formats  
 `InvoiceFormatsGet()` implements https://api.striven.com/Help/Api/GET-v1-invoice-formats  
 - [X] GLCategories  
-`GLCategoriesGet()` implements https://api.striven.com/Help/Api/GET-v1-glcategories
+`GLCategoriesGet()` implements https://api.striven.com/Help/Api/GET-v1-glcategories  
+- [X] Industries  
+`IndustriesGet()` implements https://api.striven.com/Help/Api/GET-v1-industries  
+- [X] InventoryLocations  
+`InventoryLocationsGet()` implements https://api.striven.com/Help/Api/GET-v1-inventory-locations  
 - [X] ItemTypes  
 `ItemTypesGet()` implements https://api.striven.com/Help/Api/GET-v1-item-types  
 
@@ -57,9 +61,6 @@ APIs Not Implemented
 - [ ] CreditMemos  
 - [ ] CustomerAssets  
 - [ ] GLAcconuts  
-
-- [ ] Industries  
-- [ ] InventoryLocations  
 - [ ] Invoices  
 - [ ] Items  
 - [ ] JournalEntries  
