@@ -10,10 +10,15 @@ import (
 // Classes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-classes
 type Classes struct {
 	TotalCount int `json:"totalCount"`
-	Data       struct {
+	Data       []struct {
 		ID       int    `json:"id"`
 		Name     string `json:"name"`
 		FullName string `json:"fullName"`
+		Parent   struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		}
+		Active bool `json:"active"`
 	}
 }
 
