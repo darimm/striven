@@ -29,7 +29,7 @@ Current Status: Incomplete.
 APIs Implemented (Checkmark means Completely implemented)
 
 - [X] Access Tokens  
-`striven.New(CustomerID,CustomerSecret)` implements https://api.striven.com/v1/apitoken  
+`New(CustomerID,CustomerSecret)` implements https://api.striven.com/v1/apitoken  
 - [X] Classes  
 `ClassesGet()` implements https://api.striven.com/v1/classes  
 - [ ] Customers  
@@ -39,6 +39,9 @@ APIs Implemented (Checkmark means Completely implemented)
 `CustomListItemsGet(ListID int)` implements https://api.striven.com/v1/custom-lists/{ListID}/list-items  
 - [X] Employees  
 `EmployeesGet()` implements https://api.striven.com/v1/employees  
+- [X] Formats  
+`InvoiceFormatsGet()` implements https://api.striven.com/Help/Api/GET-v1-invoice-formats  
+
 
 APIs Not Implemented
 
@@ -48,7 +51,6 @@ APIs Not Implemented
 - [ ] Contacts  
 - [ ] CreditMemos  
 - [ ] CustomerAssets  
-- [ ] Formats  
 - [ ] GLAcconuts  
 - [ ] GLCategories  
 - [ ] Industries  

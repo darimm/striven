@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-
-	"gopkg.in/resty.v1"
 )
 
 // rawEmployee is the structure for a single Employee returned from the API
@@ -33,17 +31,8 @@ type Employees []rawEmployee
 
 // EmployeesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-employees Time is returned in UTC
 func (s *Striven) EmployeesGet() ([]Employee, error) {
-	err := s.validateAccessToken()
-	if err != nil {
-		fmt.Println("Failed to Validate Access Token")
-		return []Employee{}, err
-	}
-	client := resty.New()
-	resp, err := client.R().
-		SetAuthToken(s.Token.AccessToken).
-		SetHeader("Content-Type", "application/json").
-		Get(fmt.Sprintf("%sv1/employees", StrivenURL))
 
+	resp, err := s.apiGet("v1/employees")
 	if resp.StatusCode() != 200 || err != nil {
 		return []Employee{}, fmt.Errorf("Response Status Code: %d, Error retrieving Refresh Token", resp.StatusCode())
 	}
