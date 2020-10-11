@@ -34,7 +34,7 @@ func (s *Striven) EmployeesGet() ([]Employee, error) {
 
 	resp, err := s.apiGet("v1/employees")
 	if resp.StatusCode() != 200 || err != nil {
-		return []Employee{}, fmt.Errorf("Response Status Code: %d, Error retrieving Refresh Token", resp.StatusCode())
+		return []Employee{}, fmt.Errorf("Response Status Code: %d, Error retrieving Employees", resp.StatusCode())
 	}
 	var e Employees
 	err = json.Unmarshal([]byte(resp.Body()), &e)

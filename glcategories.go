@@ -23,7 +23,7 @@ func (s *Striven) GLCategoriesGet() (GLCategories, error) {
 
 	resp, err := s.apiGet("v1/glcategories")
 	if resp.StatusCode() != 200 || err != nil {
-		return GLCategories{}, fmt.Errorf("Response Status Code: %d, Error retrieving Refresh Token", resp.StatusCode())
+		return GLCategories{}, fmt.Errorf("Response Status Code: %d, Error retrieving GLCategories", resp.StatusCode())
 	}
 	var r GLCategories
 	err = json.Unmarshal([]byte(resp.Body()), &r)

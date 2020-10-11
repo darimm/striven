@@ -2,6 +2,7 @@ package striven
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // InventoryLocations is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-inventory-locations
@@ -24,7 +25,7 @@ func (s *Striven) InventoryLocationsGet() (InventoryLocations, error) {
 
 	resp, err := s.apiGet("v1/inventory-locations")
 	if err != nil {
-		return InventoryLocations{}, err
+		return InventoryLocations{}, fmt.Errorf("Response Status Code: %d, Error retrieving Inventory Locations", resp.StatusCode())
 	}
 	var r InventoryLocations
 	json.Unmarshal([]byte(resp.Body()), &r)

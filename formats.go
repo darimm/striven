@@ -20,7 +20,7 @@ func (s *Striven) InvoiceFormatsGet() (InvoiceFormats, error) {
 
 	resp, err := s.apiGet("v1/invoice-formats")
 	if resp.StatusCode() != 200 || err != nil {
-		return InvoiceFormats{}, fmt.Errorf("Response Status Code: %d, Error retrieving Refresh Token", resp.StatusCode())
+		return InvoiceFormats{}, fmt.Errorf("Response Status Code: %d, Error retrieving Invoice Formats", resp.StatusCode())
 	}
 	var r InvoiceFormats
 	err = json.Unmarshal([]byte(resp.Body()), &r)

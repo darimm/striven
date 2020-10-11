@@ -2,6 +2,7 @@ package striven
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // Classes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-classes
@@ -24,7 +25,7 @@ func (s *Striven) ClassesGet() (Classes, error) {
 
 	resp, err := s.apiGet("v1/classes")
 	if err != nil {
-		return Classes{}, err
+		return Classes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Classes", resp.StatusCode())
 	}
 	var r Classes
 	json.Unmarshal([]byte(resp.Body()), &r)

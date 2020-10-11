@@ -53,7 +53,7 @@ func (s *Striven) initializeToken() error {
 
 	if resp.StatusCode() != 200 || err != nil {
 		s.Token = strivenToken{}
-		return err
+		return fmt.Errorf("Response Status Code: %d, Error retrieving APIToken", resp.StatusCode())
 	}
 
 	json.Unmarshal([]byte(resp.Body()), &s.Token)

@@ -50,6 +50,8 @@ Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-cont
 `InventoryLocationsGet()` implements https://api.striven.com/Help/Api/GET-v1-inventory-locations  
 - [X] ItemTypes  
 `ItemTypesGet()` implements https://api.striven.com/Help/Api/GET-v1-item-types  
+- [X] Pools  
+`PoolsGet()` implements https://api.striven.com/Help/Api/GET-v1-pools  
 
 
 APIs Not Implemented
@@ -67,7 +69,6 @@ APIs Not Implemented
 - [ ] Opportunities  
 - [ ] Payments  
 - [ ] PaymentTerms  
-- [ ] Pools  
 - [ ] Purchase Orders  
 - [ ] ReferralSources  
 - [ ] SalesOrders  

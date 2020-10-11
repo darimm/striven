@@ -19,7 +19,7 @@ func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 		Get(fmt.Sprintf("%s%s", StrivenURL, URI))
 
 	if resp.StatusCode() != 200 || err != nil {
-		return nil, fmt.Errorf("%d %w", resp.StatusCode(), err)
+		return nil, fmt.Errorf("%d %v", resp.StatusCode(), err)
 	}
 
 	return resp, nil

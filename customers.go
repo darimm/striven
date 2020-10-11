@@ -22,7 +22,7 @@ func (s *Striven) CustomersGetContentGroups(clientID int) (CustomersHubContentGr
 
 	resp, err := s.apiGet(fmt.Sprintf("v1/customers/%d/hub/content-groups", clientID))
 	if resp.StatusCode() != 200 || err != nil {
-		return CustomersHubContentGroupResult{}, err
+		return CustomersHubContentGroupResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Hub Content Groups", resp.StatusCode())
 	}
 	var r CustomersHubContentGroupResult
 	json.Unmarshal([]byte(resp.Body()), &r)
@@ -148,7 +148,7 @@ func (s *Striven) UploadClientHubFile(chd *CustomersHubDoc, remoteFileName strin
 		SetFile(remoteFileName, localFilePath).
 		Post(URL)
 	if resp.StatusCode() != 200 || err != nil {
-		return resp.StatusCode(), err
+		return resp.StatusCode(), fmt.Errorf("Response Status Code: %d, Error uploading document", resp.StatusCode())
 	}
 	return resp.StatusCode(), nil
 }

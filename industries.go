@@ -2,6 +2,7 @@ package striven
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // Industries is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-industries
@@ -19,7 +20,7 @@ func (s *Striven) IndustriesGet() (Industries, error) {
 
 	resp, err := s.apiGet("v1/industries")
 	if err != nil {
-		return Industries{}, err
+		return Industries{}, fmt.Errorf("Response Status Code: %d, Error retrieving Industries", resp.StatusCode())
 	}
 	var r Industries
 	json.Unmarshal([]byte(resp.Body()), &r)

@@ -2,6 +2,7 @@ package striven
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 // ItemTypes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-item-types
@@ -18,7 +19,7 @@ func (s *Striven) ItemTypesGet() (ItemTypes, error) {
 
 	resp, err := s.apiGet("v1/item-types")
 	if err != nil {
-		return ItemTypes{}, err
+		return ItemTypes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Item Types", resp.StatusCode())
 	}
 	var r ItemTypes
 	json.Unmarshal([]byte(resp.Body()), &r)
