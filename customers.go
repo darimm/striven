@@ -11,7 +11,9 @@ type customersFunc struct {
 	ContentGroups contentGroupsFunc
 }
 
-type contentGroupsFunc struct{}
+type contentGroupsFunc struct {
+	Document CustomersHubDoc
+}
 
 // CustomersHubContentGroupAPIResult is the structure of a request to Striven to GetContentGroups()
 type CustomersHubContentGroupAPIResult struct {
@@ -48,23 +50,23 @@ type CustomersHubDoc struct {
 type CustomersHubDocOption func(*CustomersHubDoc)
 
 //SetClientID Functional Option for CHD Constructor ClientID
-func SetClientID(c int) CustomersHubDocOption {
+func SetClientID(clientID int) CustomersHubDocOption {
 	return func(h *CustomersHubDoc) {
-		h.ClientID = c
+		h.ClientID = clientID
 	}
 }
 
 //SetGroupID Functional Option for CHD Constructor GroupID
-func SetGroupID(g int) CustomersHubDocOption {
+func SetGroupID(groupID int) CustomersHubDocOption {
 	return func(h *CustomersHubDoc) {
-		h.GroupID = g
+		h.GroupID = groupID
 	}
 }
 
 //SetContentGroupName Option for CHD Constructor Group Name
-func SetContentGroupName(g string) CustomersHubDocOption {
+func SetContentGroupName(groupName string) CustomersHubDocOption {
 	return func(h *CustomersHubDoc) {
-		h.ContentGroupName = g
+		h.ContentGroupName = groupName
 	}
 }
 
@@ -82,8 +84,8 @@ func IsVisibleOnPortal() CustomersHubDocOption {
 	}
 }
 
-//NewCustomersHubDoc is the Constructor for a default CustomersHubDoc
-func NewCustomersHubDoc(opts ...CustomersHubDocOption) *CustomersHubDoc {
+//Upload is the Constructor and uploader for a default CustomersHubDoc
+func (chd *CustomersHubDoc) Upload(remoteFileName string, localFilePath string, opts ...CustomersHubDocOption) (int, error) {
 	const (
 		defaultClientID               = 1
 		defaultGroupID                = 0
@@ -92,7 +94,7 @@ func NewCustomersHubDoc(opts ...CustomersHubDocOption) *CustomersHubDoc {
 		defaultVisibleOnPortal        = false
 	)
 
-	n := &CustomersHubDoc{
+	chd = &CustomersHubDoc{
 		ClientID:               defaultClientID,
 		GroupID:                defaultGroupID,
 		ContentGroupName:       defaultContentGroupName,
@@ -103,15 +105,16 @@ func NewCustomersHubDoc(opts ...CustomersHubDocOption) *CustomersHubDoc {
 	// Iterate over each option provided
 	for _, opt := range opts {
 		// Call the option giving the above instance of CustomersHubDoc as the arguement
-		opt(n)
+		opt(chd)
 	}
 
-	return n
+	httpResponseCode, err := chd.uploadClientHubFile(remoteFileName, localFilePath)
+	return httpResponseCode, err
+
 }
 
-//TODO: This should be a method of the CustomersHubDoc struct.
-//UploadClientHubFile is the function to Upload a document to a Client Hub
-func (chd *CustomersHubDoc) UploadClientHubFile(remoteFileName string, localFilePath string) (int, error) {
+// uploadClientHubFile is the function to Upload a document to a Client Hub
+func (chd *CustomersHubDoc) uploadClientHubFile(remoteFileName string, localFilePath string) (int, error) {
 	var overwrite string = "true"
 	if !chd.OverwriteExistingFiles {
 		overwrite = "false"
@@ -142,14 +145,14 @@ func (chd *CustomersHubDoc) UploadClientHubFile(remoteFileName string, localFile
 		})
 	}
 
-	err := s.validateAccessToken()
+	err := stv.validateAccessToken()
 	if err != nil {
 		return 401, err
 	}
 
 	client := resty.New()
 	resp, err := client.R().
-		SetAuthToken(s.Token.AccessToken).
+		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(headers).
 		SetFile(remoteFileName, localFilePath).
 		Post(URL)

@@ -34,7 +34,7 @@ APIs Implemented (Checkmark means Completely implemented)
 `Classes.GetAll()` implements https://api.striven.com/v1/classes  
 - [ ] Customers  
 `Customers.ContentGroups.GetByID(clientID int)` implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups  
-Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-content-groups-groupId-documents exists, but needs some updating to be clear on it's use.  
+`Customers.ContentGroups.Document.Upload(remoteFileName string, localFilePath string, opts ...CustomersHubDocOption)` implements https://api.striven.com/Help/Api/POST-v1-customers-id-hub-content-groups-groupId-documents available options are `striven.SetClientID(ClientID int)`, `striven.SetGroupID(GroupID int)`, `striven.SetContentGroupName(GroupName string)`, `striven.IsOverwriteEnabled()`, and `striven.IsVisibleOnPortal()` this function is suitable for single file uploads, if your application needs concurrent uploads, create variables of the type CustomersHubDoc and call the Upload method as above.  
 - [X] CustomList  
 `CustomLists.GetAll()` implements https://api.striven.com/v1/custom-lists  
 `CustomLists.ListItems.Get(ListID int)` implements https://api.striven.com/v1/custom-lists/{ListID}/list-items  
