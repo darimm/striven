@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
-// Classes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-classes
-type Classes struct {
+type classesFunc struct{}
+
+// ClassesAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-classes
+type ClassesAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID       int    `json:"id"`
@@ -21,13 +23,13 @@ type Classes struct {
 }
 
 // ClassesGet returns a list of available Classes
-func (s *Striven) ClassesGet() (Classes, error) {
+func (*classesFunc) GetAll() (ClassesAPIResult, error) {
 
-	resp, err := s.apiGet("v1/classes")
+	resp, err := stv.apiGet("v1/classes")
 	if err != nil {
-		return Classes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Classes", resp.StatusCode())
+		return ClassesAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Classes", resp.StatusCode())
 	}
-	var r Classes
+	var r ClassesAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }

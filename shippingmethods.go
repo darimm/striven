@@ -5,28 +5,30 @@ import (
 	"fmt"
 )
 
-// ShippingMethod is the structure for an item in the API return from https://api.striven.com/Help/Api/GET-v1-shipping-methods
-type ShippingMethod struct {
+type shippingMethodsFunc struct{}
+
+// ShippingMethodAPIResult is the structure for an item in the API return from https://api.striven.com/Help/Api/GET-v1-shipping-methods
+type ShippingMethodAPIResult struct {
 	ShippingMethodID int    `json:"shippingMethodId"`
 	ShippingMethod   string `json:"shippingMethod"`
 	TrackingURL      string `json:"trackingURL"`
 	Active           bool   `json:"active"`
 }
 
-// ShippingMethods is the collection of ShippingMethod needed to return all available ShippingMethods from the API
-type ShippingMethods []ShippingMethod
+// ShippingMethodsAPIResult is the collection of ShippingMethod needed to return all available ShippingMethods from the API
+type ShippingMethodsAPIResult []ShippingMethodAPIResult
 
-// ShippingMethodsGet is an implementition of https://api.striven.com/Help/Api/GET-v1-shipping-methods
-func (s *Striven) ShippingMethodsGet() (ShippingMethods, error) {
+// GetAll (ShippingMethods) is an implementition of https://api.striven.com/Help/Api/GET-v1-shipping-methods
+func (*shippingMethodsFunc) GetAll() (ShippingMethodsAPIResult, error) {
 
-	resp, err := s.apiGet("v1/shipping-methods")
+	resp, err := stv.apiGet("v1/shipping-methods")
 	if err != nil {
-		return ShippingMethods{}, fmt.Errorf("Response Status Code: %d, Error retrieving Shipping Methods", resp.StatusCode())
+		return ShippingMethodsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Shipping Methods", resp.StatusCode())
 	}
-	var r ShippingMethods
+	var r ShippingMethodsAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
-		return ShippingMethods{}, err
+		return ShippingMethodsAPIResult{}, err
 	}
 	return r, nil
 }

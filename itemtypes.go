@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
-// ItemTypes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-item-types
-type ItemTypes struct {
+type itemTypesfunc struct{}
+
+// ItemTypesAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-item-types
+type ItemTypesAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID   int    `json:"id"`
@@ -14,14 +16,14 @@ type ItemTypes struct {
 	}
 }
 
-// ItemTypesGet returns a list of ItemTypes
-func (s *Striven) ItemTypesGet() (ItemTypes, error) {
+// GetAll (ItemTypes) returns a list of ItemTypes
+func (*itemTypesfunc) GetAll() (ItemTypesAPIResult, error) {
 
-	resp, err := s.apiGet("v1/item-types")
+	resp, err := stv.apiGet("v1/item-types")
 	if err != nil {
-		return ItemTypes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Item Types", resp.StatusCode())
+		return ItemTypesAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Item Types", resp.StatusCode())
 	}
-	var r ItemTypes
+	var r ItemTypesAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }

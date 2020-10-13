@@ -6,8 +6,10 @@ import (
 	"strconv"
 )
 
-// SalesOrderTypes is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-sales-order-types_excludeContractManagedTypes
-type SalesOrderTypes struct {
+type salesOrderTypesFunc struct{}
+
+// SalesOrderTypesAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-sales-order-types_excludeContractManagedTypes
+type SalesOrderTypesAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID        int    `json:"id"`
@@ -17,14 +19,14 @@ type SalesOrderTypes struct {
 	}
 }
 
-// SalesOrderTypesGet returns a list of Sales Order types, filtered to exclude contract managed order types if the passed parameter is true
-func (s *Striven) SalesOrderTypesGet(excludeContractManagedTypes bool) (SalesOrderTypes, error) {
+// GetAll (SalesOrderTypes) returns a list of Sales Order types, filtered to exclude contract managed order types if the passed parameter is true
+func (*salesOrderTypesFunc) GetAll(excludeContractManagedTypes bool) (SalesOrderTypesAPIResult, error) {
 
-	resp, err := s.apiGet(fmt.Sprintf("v1/sales-order-types?excludeContractManagedTypes=%s", strconv.FormatBool(excludeContractManagedTypes)))
+	resp, err := stv.apiGet(fmt.Sprintf("v1/sales-order-types?excludeContractManagedTypes=%s", strconv.FormatBool(excludeContractManagedTypes)))
 	if err != nil {
-		return SalesOrderTypes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Sales Order Types", resp.StatusCode())
+		return SalesOrderTypesAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Sales Order Types", resp.StatusCode())
 	}
-	var r SalesOrderTypes
+	var r SalesOrderTypesAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }

@@ -5,27 +5,29 @@ import (
 	"fmt"
 )
 
-// Pool is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-pools
-type Pool struct {
+type poolsFunc struct{}
+
+// PoolAPIResult is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-pools
+type PoolAPIResult struct {
 	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	IsDefault bool   `json:"isDefault"`
 }
 
-// Pools is the collection of Pool needed to return all available Pools
-type Pools []Pool
+// PoolsAPIResult is the collection of Pool needed to return all available Pools
+type PoolsAPIResult []PoolAPIResult
 
-// PoolsGet is an implementition of https://api.striven.com/Help/Api/GET-v1-pools
-func (s *Striven) PoolsGet() (Pools, error) {
+// GetAll (Pools) is an implementition of https://api.striven.com/Help/Api/GET-v1-pools
+func (*poolsFunc) GetAll() (PoolsAPIResult, error) {
 
-	resp, err := s.apiGet("v1/pools")
+	resp, err := stv.apiGet("v1/pools")
 	if err != nil {
-		return Pools{}, fmt.Errorf("Response Status Code: %d, Error retrieving Pools", resp.StatusCode())
+		return PoolsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Pools", resp.StatusCode())
 	}
-	var r Pools
+	var r PoolsAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
-		return Pools{}, err
+		return PoolsAPIResult{}, err
 	}
 	return r, nil
 }

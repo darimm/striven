@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
-// GLCategory is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-glcategories
-type GLCategory struct {
+type glCategoryFunc struct{}
+
+// GLCategoryAPIResult is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-glcategories
+type GLCategoryAPIResult struct {
 	CategoryID         int    `json:"CategoryID"`
 	CategoryName       string `json:"CategoryName"`
 	CategoryFullName   string `json:"CategoryFullName"`
@@ -15,20 +17,20 @@ type GLCategory struct {
 	Active             bool   `json:"active"`
 }
 
-// GLCategories is the collection of InvoiceFormat needed to return all formats
-type GLCategories []GLCategory
+// GLCategoriesAPIResult is the collection of InvoiceFormat needed to return all formats
+type GLCategoriesAPIResult []GLCategoryAPIResult
 
-// GLCategoriesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-glcategories
-func (s *Striven) GLCategoriesGet() (GLCategories, error) {
+// GetAll (GLCategoriesGet) is an implementition of https://api.striven.com/Help/Api/GET-v1-glcategories
+func (*glCategoryFunc) GetAll() (GLCategoriesAPIResult, error) {
 
-	resp, err := s.apiGet("v1/glcategories")
+	resp, err := stv.apiGet("v1/glcategories")
 	if resp.StatusCode() != 200 || err != nil {
-		return GLCategories{}, fmt.Errorf("Response Status Code: %d, Error retrieving GLCategories", resp.StatusCode())
+		return GLCategoriesAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving GLCategories", resp.StatusCode())
 	}
-	var r GLCategories
+	var r GLCategoriesAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
-		return GLCategories{}, err
+		return GLCategoriesAPIResult{}, err
 	}
 	return r, nil
 }

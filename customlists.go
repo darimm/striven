@@ -5,8 +5,14 @@ import (
 	"fmt"
 )
 
-// CustomLists is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-custom-lists
-type CustomLists struct {
+type customListItemsFunc struct{}
+
+type customListsFunc struct {
+	ListItems customListItemsFunc
+}
+
+// CustomListsAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-custom-lists
+type CustomListsAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID     int    `json:"id"`
@@ -15,8 +21,8 @@ type CustomLists struct {
 	}
 }
 
-// CustomListItems is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-custom-lists-id-list-items
-type CustomListItems struct {
+// CustomListItemsAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-custom-lists-id-list-items
+type CustomListItemsAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID        int    `json:"id"`
@@ -26,27 +32,27 @@ type CustomListItems struct {
 	}
 }
 
-// CustomListsGet returns a list of available Custom Lists used in the system.
-func (s *Striven) CustomListsGet() (CustomLists, error) {
+// GetAll (CustomLists) returns a list of available Custom Lists used in the system.
+func (*customListsFunc) GetAll() (CustomListsAPIResult, error) {
 
-	resp, err := s.apiGet("v1/custom-lists")
+	resp, err := stv.apiGet("v1/custom-lists")
 	if err != nil {
-		return CustomLists{}, fmt.Errorf("Response Status Code: %d, Error retrieving Custom Lists", resp.StatusCode())
+		return CustomListsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Custom Lists", resp.StatusCode())
 	}
 
-	var r CustomLists
+	var r CustomListsAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }
 
-// CustomListItemsGet returns a list of items in a specific custom list specified by listID
-func (s *Striven) CustomListItemsGet(listID int) (CustomListItems, error) {
-	resp, err := s.apiGet(fmt.Sprintf("v1/custom-lists/%d/list-items", listID))
+// GetByID (CustomListItems) returns a list of items in a specific custom list specified by listID
+func (c *customListItemsFunc) GetByID(listID int) (CustomListItemsAPIResult, error) {
+	resp, err := stv.apiGet(fmt.Sprintf("v1/custom-lists/%d/list-items", listID))
 	if err != nil {
-		return CustomListItems{}, fmt.Errorf("Response Status Code: %d, Error retrieving List Items", resp.StatusCode())
+		return CustomListItemsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving List Items", resp.StatusCode())
 	}
 
-	var r CustomListItems
+	var r CustomListItemsAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }

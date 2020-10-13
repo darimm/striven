@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+type employeesFunc struct{}
+
 // rawEmployee is the structure for a single Employee returned from the API
 type rawEmployee struct {
 	ID              int    `json:"id"`
@@ -16,8 +18,8 @@ type rawEmployee struct {
 	LastUpdatedDate string `json:"lastUpdatedDate"`
 }
 
-// Employee is the structure for a single Employee
-type Employee struct {
+// EmployeeAPIResult is the structure for a single Employee
+type EmployeeAPIResult struct {
 	ID              int    `json:"id"`
 	Name            string `json:"name"`
 	Email           string `json:"email"`
@@ -26,27 +28,27 @@ type Employee struct {
 	LastUpdatedDate time.Time
 }
 
-// Employees is the structure for employees in Striven.
-type Employees []rawEmployee
+// EmployeesAPIResult is the structure for employees in Striven.
+type EmployeesAPIResult []rawEmployee
 
-// EmployeesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-employees Time is returned in UTC
-func (s *Striven) EmployeesGet() ([]Employee, error) {
+// GetAll (Employees) is an implementition of https://api.striven.com/Help/Api/GET-v1-employees Time is returned in UTC
+func (*employeesFunc) GetAll() ([]EmployeeAPIResult, error) {
 
-	resp, err := s.apiGet("v1/employees")
+	resp, err := stv.apiGet("v1/employees")
 	if resp.StatusCode() != 200 || err != nil {
-		return []Employee{}, fmt.Errorf("Response Status Code: %d, Error retrieving Employees", resp.StatusCode())
+		return []EmployeeAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Employees", resp.StatusCode())
 	}
-	var e Employees
+	var e EmployeesAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &e)
 	if err != nil {
-		return []Employee{}, err
+		return []EmployeeAPIResult{}, err
 	}
 
-	var r []Employee
+	var r []EmployeeAPIResult
 	for _, v := range e {
 		dc, _ := time.Parse(time.RFC3339Nano, fmt.Sprintf("%sZ", v.DateCreated))
 		lu, _ := time.Parse(time.RFC3339Nano, fmt.Sprintf("%sZ", v.LastUpdatedDate))
-		r = append(r, Employee{
+		r = append(r, EmployeeAPIResult{
 			ID:              v.ID,
 			Name:            v.Name,
 			Email:           v.Email,

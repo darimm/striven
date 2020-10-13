@@ -12,6 +12,8 @@ import (
 //StrivenURL is the global URL for Striven's API
 const StrivenURL string = "https://api.striven.com/"
 
+var stv *Striven = &Striven{}
+
 type strivenToken struct {
 	AccessToken    string `json:"access_token"`
 	RefreshToken   string `json:"refresh_token"`
@@ -21,20 +23,33 @@ type strivenToken struct {
 
 //Striven is the core object in this module. It is an instance of the Striven API Token and the ID and Secret used to connect.
 type Striven struct {
-	ClientID     string
-	ClientSecret string
-	Token        strivenToken
+	ClientID           string
+	ClientSecret       string
+	Token              strivenToken
+	Classes            classesFunc
+	CustomLists        customListsFunc
+	Employees          employeesFunc
+	InvoiceFormats     invoiceFormatsFunc
+	GLCategories       glCategoryFunc
+	Industries         industriesFunc
+	InventoryLocations inventoryLocationsFunc
+	ItemTypes          itemTypesfunc
+	PaymentTerms       paymentTermsFunc
+	Pools              poolsFunc
+	ReferralSources    referralSourcesFunc
+	SalesOrderTypes    salesOrderTypesFunc
+	ShippingMethods    shippingMethodsFunc
 }
 
 //New is the constructor for an Striven Object. Changing the default ClientID and Secret will also invalidate the token
 func New(ID string, Secret string) *Striven {
-	s := &Striven{
+	stv = &Striven{
 		ClientID:     ID,
 		ClientSecret: Secret,
 		Token:        strivenToken{},
 	}
-	s.initializeToken()
-	return s
+	stv.initializeToken()
+	return stv
 }
 
 //initializeToken reaches out to the Striven API and uses your ClientID and ClientSecret to Generate an Striven Token

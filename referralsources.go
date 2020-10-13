@@ -5,8 +5,10 @@ import (
 	"fmt"
 )
 
-// ReferralSources is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-referral-sources
-type ReferralSources struct {
+type referralSourcesFunc struct{}
+
+// ReferralSourcesAPIResult is the structure for an API return from https://api.striven.com/Help/Api/GET-v1-referral-sources
+type ReferralSourcesAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID     int    `json:"id"`
@@ -15,17 +17,17 @@ type ReferralSources struct {
 	}
 }
 
-// ReferralSourcesGet is an implementition of https://api.striven.com/Help/Api/GET-v1-referral-sources
-func (s *Striven) ReferralSourcesGet() (ReferralSources, error) {
+// GetAll (ReferralSources) is an implementition of https://api.striven.com/Help/Api/GET-v1-referral-sources
+func (*referralSourcesFunc) GetAll() (ReferralSourcesAPIResult, error) {
 
-	resp, err := s.apiGet("v1/referral-sources")
+	resp, err := stv.apiGet("v1/referral-sources")
 	if err != nil {
-		return ReferralSources{}, fmt.Errorf("Response Status Code: %d, Error retrieving Referral Sources", resp.StatusCode())
+		return ReferralSourcesAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Referral Sources", resp.StatusCode())
 	}
-	var r ReferralSources
+	var r ReferralSourcesAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
-		return ReferralSources{}, err
+		return ReferralSourcesAPIResult{}, err
 	}
 	return r, nil
 }
