@@ -15,7 +15,7 @@ func main() {
   s := striven.New("MYCLIENTID", "MYCLIENTSECRET")
   fmt.println(s.Token.AccessToken)
  
-  resp, err := s.EmployeesGet()
+  resp, err := s.Employees.GetAll()
   
   if err != nil {
     fmt.Println(err)
