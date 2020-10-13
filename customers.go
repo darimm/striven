@@ -7,8 +7,14 @@ import (
 	"gopkg.in/resty.v1"
 )
 
-// CustomersHubContentGroupResult is the structure of a request to Striven to GetContentGroups()
-type CustomersHubContentGroupResult struct {
+type customersFunc struct {
+	ContentGroups contentGroupsFunc
+}
+
+type contentGroupsFunc struct{}
+
+// CustomersHubContentGroupAPIResult is the structure of a request to Striven to GetContentGroups()
+type CustomersHubContentGroupAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
 		ID        int    `json:"id"`
@@ -18,13 +24,13 @@ type CustomersHubContentGroupResult struct {
 }
 
 // CustomersGetContentGroups returns a list of Hub content groups for a given Client.
-func (s *Striven) CustomersGetContentGroups(clientID int) (CustomersHubContentGroupResult, error) {
+func (*contentGroupsFunc) GetByID(clientID int) (CustomersHubContentGroupAPIResult, error) {
 
-	resp, err := s.apiGet(fmt.Sprintf("v1/customers/%d/hub/content-groups", clientID))
+	resp, err := stv.apiGet(fmt.Sprintf("v1/customers/%d/hub/content-groups", clientID))
 	if resp.StatusCode() != 200 || err != nil {
-		return CustomersHubContentGroupResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Hub Content Groups", resp.StatusCode())
+		return CustomersHubContentGroupAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Hub Content Groups", resp.StatusCode())
 	}
-	var r CustomersHubContentGroupResult
+	var r CustomersHubContentGroupAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }
@@ -105,7 +111,7 @@ func NewCustomersHubDoc(opts ...CustomersHubDocOption) *CustomersHubDoc {
 
 //TODO: This should be a method of the CustomersHubDoc struct.
 //UploadClientHubFile is the function to Upload a document to a Client Hub
-func (s *Striven) UploadClientHubFile(chd *CustomersHubDoc, remoteFileName string, localFilePath string) (int, error) {
+func (chd *CustomersHubDoc) UploadClientHubFile(remoteFileName string, localFilePath string) (int, error) {
 	var overwrite string = "true"
 	if !chd.OverwriteExistingFiles {
 		overwrite = "false"

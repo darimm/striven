@@ -33,7 +33,7 @@ APIs Implemented (Checkmark means Completely implemented)
 - [X] Classes  
 `Classes.GetAll()` implements https://api.striven.com/v1/classes  
 - [ ] Customers  
-`CustomersGetContentGroups(clientID int)` implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups  
+`Customers.ContentGroups.GetByID(clientID int)` implements https://api.striven.com/v1/customers/{clientID}/hub/content-groups  
 Implementation of https://api.striven.com/Help/Api/POST-v1-customers-id-hub-content-groups-groupId-documents exists, but needs some updating to be clear on it's use.  
 - [X] CustomList  
 `CustomLists.GetAll()` implements https://api.striven.com/v1/custom-lists  
