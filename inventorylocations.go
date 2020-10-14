@@ -17,7 +17,7 @@ type InventoryLocationsAPIResult struct {
 		Parent   struct {
 			ID   int    `json:"id"`
 			Name string `json:"name"`
-		}
+		} `json:"parent"`
 		Active bool `json:"active"`
 	}
 }
