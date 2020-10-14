@@ -46,16 +46,25 @@ type CustomerDetailAPIResult struct {
 		ID   int    `json:"id"`
 		Name string `json:"name"`
 	} `json:"industry"`
-	CustomerSince         string      `json:"customerSince"`
-	OnCreditHold          bool        `json:"onCreditHold"`
-	CreditLimit           float64     `json:"creditLimit"`
-	WebSite               string      `json:"webSite"`
-	IsTaxExempt           bool        `json:"isTaxExempt"`
-	IsFinanceChargeExempt bool        `json:"isFinanceChargeExempt"`
-	PaymentTerm           interface{} `json:"paymentTerm"`
-	BillToLocation        interface{} `json:"billToLocation"`
-	ShipToLocation        interface{} `json:"shipToLocation"`
-	Phones                []struct {
+	CustomerSince         string  `json:"customerSince"`
+	OnCreditHold          bool    `json:"onCreditHold"`
+	CreditLimit           float64 `json:"creditLimit"`
+	WebSite               string  `json:"webSite"`
+	IsTaxExempt           bool    `json:"isTaxExempt"`
+	IsFinanceChargeExempt bool    `json:"isFinanceChargeExempt"`
+	PaymentTerm           struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"paymentTerm"`
+	BillToLocation struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"billToLocation"`
+	ShipToLocation struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"shipToLocation"`
+	Phones []struct {
 		ID        int `json:"id"`
 		PhoneType struct {
 			ID   int    `json:"id"`
@@ -79,8 +88,8 @@ type CustomerDetailAPIResult struct {
 		FullAddress string  `json:"fullAddress"`
 	} `json:"primaryAddress"`
 	PriceList struct {
-		ID   int         `json:"id"`
-		Name interface{} `json:"name"`
+		ID   int    `json:"id"`
+		Name string `json:"name"`
 	} `json:"priceList"`
 	CustomFields []struct {
 		ID        int    `json:"id"`
@@ -124,14 +133,14 @@ func (*customersFunc) GetByID(customerID int) (CustomerDetailAPIResult, error) {
 type CustomerContactAPIResult struct {
 	TotalCount int `json:"totalCount"`
 	Data       []struct {
-		ID        int         `json:"id"`
-		FirstName string      `json:"firstName"`
-		LastName  string      `json:"lastName"`
-		Title     string      `json:"title"`
-		Phone     interface{} `json:"phone"`
-		Email     string      `json:"email"`
-		IsPrimary bool        `json:"isPrimary"`
-		Active    bool        `json:"active"`
+		ID        int    `json:"id"`
+		FirstName string `json:"firstName"`
+		LastName  string `json:"lastName"`
+		Title     string `json:"title"`
+		Phone     string `json:"phone"`
+		Email     string `json:"email"`
+		IsPrimary bool   `json:"isPrimary"`
+		Active    bool   `json:"active"`
 	} `json:"data"`
 }
 
