@@ -27,6 +27,7 @@ type Striven struct {
 	ClientSecret       string
 	Token              strivenToken
 	Classes            classesFunc
+	Contacts           contactsFunc
 	Customers          customersFunc
 	CustomLists        customListsFunc
 	Employees          employeesFunc
