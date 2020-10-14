@@ -32,6 +32,8 @@ APIs Implemented (Checkmark means Completely implemented)
 `New(CustomerID,CustomerSecret)` implements https://api.striven.com/v1/apitoken  
 - [X] Classes  
 `Classes.GetAll()` implements https://api.striven.com/v1/classes  
+- [ ] Contacts  
+`Contacts.GetByID(contactID int)` implements https://api.striven.com/Help/Api/GET-v1-contacts-id
 - [ ] Customers  
 `Customers.GetByID(customerID int)` implements https://api.striven.com/v1/customers/{customerID}
 `Customers.Contacts.GetByCustomerID(customerID int)` implements https://api.striven.com/v1/customers/{customerID}/contacts
@@ -69,7 +71,6 @@ APIs Not Implemented
 - [ ] BillCredits  
 - [ ] Bills  
 - [ ] Categories  
-- [ ] Contacts  
 - [ ] CreditMemos  
 - [ ] CustomerAssets  
 - [ ] GLAcconuts  
