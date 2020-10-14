@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	resty "gopkg.in/resty.v1"
+	resty "github.com/go-resty/resty/v2"
 )
 
 //StrivenURL is the global URL for Striven's API

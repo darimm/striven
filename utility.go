@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"gopkg.in/resty.v1"
+	resty "github.com/go-resty/resty/v2"
 )
 
 func (s *Striven) apiGet(URI string) (*resty.Response, error) {

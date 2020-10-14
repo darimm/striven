@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"gopkg.in/resty.v1"
+	resty "github.com/go-resty/resty/v2"
+	"github.com/segmentio/ksuid"
 )
 
 type customersFunc struct {
@@ -225,7 +226,7 @@ func IsVisibleOnPortal() CustomersHubDocOption {
 }
 
 //Upload is the Constructor and uploader for a default CustomersHubDoc
-func (chd *CustomersHubDoc) Upload(remoteFileName string, localFilePath string, opts ...CustomersHubDocOption) (int, error) {
+func (chd *CustomersHubDoc) Upload(localFilePath string, opts ...CustomersHubDocOption) (int, error) {
 	const (
 		defaultClientID               = 1
 		defaultGroupID                = 0
@@ -248,13 +249,14 @@ func (chd *CustomersHubDoc) Upload(remoteFileName string, localFilePath string, 
 		opt(chd)
 	}
 
-	httpResponseCode, err := chd.uploadClientHubFile(remoteFileName, localFilePath)
+	httpResponseCode, err := chd.uploadClientHubFile(localFilePath)
 	return httpResponseCode, err
 
 }
 
 // uploadClientHubFile is the function to Upload a document to a Client Hub
-func (chd *CustomersHubDoc) uploadClientHubFile(remoteFileName string, localFilePath string) (int, error) {
+func (chd *CustomersHubDoc) uploadClientHubFile(localFilePath string) (int, error) {
+
 	var overwrite string = "true"
 	if !chd.OverwriteExistingFiles {
 		overwrite = "false"
@@ -290,6 +292,9 @@ func (chd *CustomersHubDoc) uploadClientHubFile(remoteFileName string, localFile
 		return 401, err
 	}
 
+	// The Remote File Name in Striven must be a unique identifier for the database. KSUIDs are guarenteed to be unique,
+	// so use two of them with a source-string tacked on in case Striven support needs to investigate something sourced from the API
+	var remoteFileName = fmt.Sprintf("%s-%s-%s", "striven-go", ksuid.New().String(), ksuid.New().String())
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(stv.Token.AccessToken).
