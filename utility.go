@@ -53,7 +53,11 @@ func (t *Timestamp) UnmarshalJSON(v []byte) error {
 		return nil
 	}
 
-	r, err := time.Parse(TimestampFormat, str)
+	tz, err := time.LoadLocation("Local")
+	if err != nil {
+		panic("TZ Local not found. ")
+	}
+	r, err := time.ParseInLocation(TimestampFormat, str, tz)
 	if err != nil {
 		return err
 	}
