@@ -41,7 +41,7 @@ type Striven struct {
 	ReferralSources    referralSourcesFunc
 	SalesOrderTypes    salesOrderTypesFunc
 	ShippingMethods    shippingMethodsFunc
-	tasksFunc          tasksFunc
+	Tasks              tasksFunc
 }
 
 //New is the constructor for an Striven Object. Changing the default ClientID and Secret will also invalidate the token
