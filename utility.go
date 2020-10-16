@@ -31,8 +31,6 @@ func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 // Timestamp is a custom time field that can be unmarshalled direct from striven because it's timestamp is not RFC3339
 type Timestamp time.Time
 
-const StrivenTimeFormat = "2006-01-02T13:04:05.999999999"
-
 const TimestampFormat = time.RFC3339 // same as ISO8601
 
 var (
@@ -50,14 +48,12 @@ func NowTimestamp() Timestamp {
 
 // UnmarshalJSON parses a nullable RFC3339 string into time.
 func (t *Timestamp) UnmarshalJSON(v []byte) error {
-	str := strings.Trim(string(v), `"`)
-	//str := fmt.Sprintf("%s%s", strings.Trim(string(v), "\""), "Z")
+	str := fmt.Sprintf("%s%s", strings.Trim(string(v), "\""), "Z")
 	if str == "null" {
 		return nil
 	}
 
-	//r, err := time.Parse(TimestampFormat, str)
-	r, err := time.Parse(StrivenTimeFormat, str)
+	r, err := time.Parse(TimestampFormat, str)
 	if err != nil {
 		return err
 	}
@@ -73,8 +69,7 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	//return []byte(t.Format(TimestampFormat)), nil
-	return []byte(t.Format(StrivenTimeFormat)), nil
+	return []byte(t.Format(TimestampFormat)), nil
 }
 
 func (t Timestamp) IsValid() bool {
