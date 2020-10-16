@@ -20,62 +20,43 @@ type contentGroupsFunc struct {
 type customerContentContactsFunc struct {
 }
 
-// CustomerDetailAPIResult is the structure of a single Customer from the customers APi
-type CustomerDetailAPIResult struct {
-	ID                int    `json:"id"`
-	Name              string `json:"name"`
-	Number            string `json:"number"`
-	IsVendor          bool   `json:"isVendor"`
-	IsConsumerAccount bool   `json:"isConsumerAccount"`
-	PrimaryContact    struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"primaryContact"`
-	Status struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"status"`
-	Categories []struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"categories"`
-	ReferralSource struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"referralSource"`
-	Industry struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"industry"`
-	CustomerSince         string  `json:"customerSince"`
-	OnCreditHold          bool    `json:"onCreditHold"`
-	CreditLimit           float64 `json:"creditLimit"`
-	WebSite               string  `json:"webSite"`
-	IsTaxExempt           bool    `json:"isTaxExempt"`
-	IsFinanceChargeExempt bool    `json:"isFinanceChargeExempt"`
-	PaymentTerm           struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"paymentTerm"`
-	BillToLocation struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"billToLocation"`
-	ShipToLocation struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"shipToLocation"`
-	Phones []struct {
+type IDNamePair struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+// CustomerDetail is the structure of a single Customer from the customers APi
+type CustomerDetail struct {
+	ID                    int          `json:"id"`
+	Name                  string       `json:"name"`
+	Number                string       `json:"number,omitempty"`
+	IsVendor              bool         `json:"isVendor,omitempty"`
+	IsConsumerAccount     bool         `json:"isConsumerAccount,omitempty"`
+	PrimaryContact        IDNamePair   `json:"primaryContact,omitempty"`
+	Status                IDNamePair   `json:"status"`
+	Categories            []IDNamePair `json:"categories,omitempty"`
+	ReferralSource        IDNamePair   `json:"referralSource,omitempty"`
+	Industry              IDNamePair   `json:"industry,omitempty"`
+	CustomerSince         string       `json:"customerSince,omitempty"` //date?
+	OnCreditHold          bool         `json:"onCreditHold,omitempty"`
+	CreditLimit           float64      `json:"creditLimit,omitempty"`
+	WebSite               string       `json:"webSite,omitempty"`
+	IsTaxExempt           bool         `json:"isTaxExempt,omitempty"`
+	IsFinanceChargeExempt bool         `json:"isFinanceChargeExempt,omitempty"`
+	PaymentTerm           IDNamePair   `json:"paymentTerm,omitempty"`
+	BillToLocation        IDNamePair   `json:"billToLocation,omitempty"`
+	ShipToLocation        IDNamePair   `json:"shipToLocation,omitempty"`
+	Phones                []struct {
 		ID        int `json:"id"`
 		PhoneType struct {
 			ID   int    `json:"id"`
 			Name string `json:"name"`
-		} `json:"phoneType"`
+		} `json:"phoneType,omitempty"`
 		Number      string `json:"number"`
 		Extension   string `json:"extension"`
 		IsPreferred bool   `json:"isPreferred"`
 		Active      bool   `json:"active"`
-	} `json:"phones"`
+	} `json:"phones,omitempty"`
 	PrimaryAddress struct {
 		Address1    string  `json:"address1"`
 		Address2    string  `json:"address2"`
@@ -87,11 +68,8 @@ type CustomerDetailAPIResult struct {
 		Latitude    float64 `json:"latitude"`
 		Longitude   float64 `json:"longitude"`
 		FullAddress string  `json:"fullAddress"`
-	} `json:"primaryAddress"`
-	PriceList struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"priceList"`
+	} `json:"primaryAddress,omitempty"`
+	PriceList    IDNamePair `json:"priceList"`
 	CustomFields []struct {
 		ID        int    `json:"id"`
 		Name      string `json:"name"`
@@ -102,30 +80,63 @@ type CustomerDetailAPIResult struct {
 		SourceID   int    `json:"sourceId"`
 		Value      string `json:"value"`
 		IsRequired bool   `json:"isRequired"`
-	} `json:"customFields"`
-	DateCreated string `json:"dateCreated"`
-	CreatedBy   struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"createdBy"`
-	LastUpdatedDate string `json:"lastUpdatedDate"`
-	LastUpdatedBy   struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"lastUpdatedBy"`
-	Currency struct {
+	} `json:"customFields,omitempty"`
+	DateCreated     string     `json:"dateCreated,omitempty"`
+	CreatedBy       IDNamePair `json:"createdBy,omitempty"`
+	LastUpdatedDate string     `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedBy   IDNamePair `json:"lastUpdatedBy,omitempty"`
+	Currency        struct {
 		CurrencyISOCode string  `json:"currencyISOCode"`
 		ExchangeRate    float64 `json:"exchangeRate"`
-	} `json:"currency"`
+	} `json:"currency,omitempty"`
+}
+
+// New (Customers) will create a new Customer
+// Use ID = 0 to create a customer, use existing ID to update. Customer Name, Status are required.
+// Available Categories, ReferralSource, Industry can be pulled using different API's listed in API Help Page.
+// Please ensure all the properties are correctly supplied in the request body when performing and update,
+// This is an full update so existing customer will be updated fully with the object being supplied with this request
+// Also ensure correct PhoneID, EmailID are being used when updating a customer.
+// If incorrect ID's are used you will get a validation error. If you wish to add new Phone/Email use 0 as ID.
+func (*customersFunc) New(customer CustomerDetail) (interface{}, error) { //(CustomerDetail, error) {
+	/*
+		fmt.Println("About to Marshal JSON")
+		reqBody, err := json.Marshal(customer)
+		if err != nil {
+			return CustomerDetail{}, fmt.Errorf("Unable to Marshal object to JSON, error %v", err)
+		}
+		fmt.Println("Successfully Marshalled JSON")
+	*/
+	var headers map[string]string
+
+	headers = (map[string]string{
+		"Content-Type": "application/json",
+		"Accept":       "application/json",
+	})
+
+	client := resty.New()
+	resp, err := client.R().
+		SetAuthToken(stv.Token.AccessToken).
+		SetHeaders(headers).
+		SetBody(customer).
+		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customers"))
+	if resp.StatusCode() != 200 || err != nil {
+		return CustomerDetail{}, fmt.Errorf("Response Status Code: %d, Error uploading document", resp.StatusCode())
+	}
+
+	var r interface{}
+	//var r CustomerDetail
+	json.Unmarshal([]byte(resp.Body()), &r)
+	return r, nil
 }
 
 // GetById (Customers) will return a single customer structure.
-func (*customersFunc) GetByID(customerID int) (CustomerDetailAPIResult, error) {
+func (*customersFunc) GetByID(customerID int) (CustomerDetail, error) {
 	resp, err := stv.apiGet(fmt.Sprintf("v1/customers/%d", customerID))
 	if resp.StatusCode() != 200 || err != nil {
-		return CustomerDetailAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Client", resp.StatusCode())
+		return CustomerDetail{}, fmt.Errorf("Response Status Code: %d, Error retrieving Client", resp.StatusCode())
 	}
-	var r CustomerDetailAPIResult
+	var r CustomerDetail
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }
