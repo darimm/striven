@@ -10,77 +10,46 @@ import (
 
 type customersFunc struct {
 	ContentGroups contentGroupsFunc
-	Contacts      customerContentContactsFunc
+	Contacts      customersContentContactsFunc
 }
 
 type contentGroupsFunc struct {
 	Document CustomersHubDoc
 }
 
-type customerContentContactsFunc struct {
-}
-
-type customerPhones struct {
-	ID          int        `json:"id"`
-	PhoneType   IDNamePair `json:"phoneType,omitempty"`
-	Number      string     `json:"number"`
-	Extension   string     `json:"extension"`
-	IsPreferred bool       `json:"isPreferred"`
-	Active      bool       `json:"active"`
-}
-
-type customerAddress struct {
-	Address1    string  `json:"address1"`
-	Address2    string  `json:"address2"`
-	Address3    string  `json:"address3"`
-	City        string  `json:"city"`
-	State       string  `json:"state"`
-	PostalCode  string  `json:"postalCode"`
-	Country     string  `json:"country"`
-	Latitude    float64 `json:"latitude"`
-	Longitude   float64 `json:"longitude"`
-	FullAddress string  `json:"fullAddress"`
-}
-
-type customerCustomFields struct {
-	ID         int        `json:"id"`
-	Name       string     `json:"name"`
-	FieldType  IDNamePair `json:"fieldType"`
-	SourceID   int        `json:"sourceId"`
-	Value      string     `json:"value"`
-	IsRequired bool       `json:"isRequired"`
+type customersContentContactsFunc struct {
 }
 
 // CustomerDetail is the structure of a single Customer from the customers APi
 type CustomerDetail struct {
-	ID                    int                    `json:"id"`
-	Name                  string                 `json:"name"`
-	Number                string                 `json:"number,omitempty"`
-	IsVendor              bool                   `json:"isVendor,omitempty"`
-	IsConsumerAccount     bool                   `json:"isConsumerAccount,omitempty"`
-	PrimaryContact        IDNamePair             `json:"primaryContact,omitempty"`
-	Status                IDNamePair             `json:"status"`
-	Categories            []IDNamePair           `json:"categories,omitempty"`
-	ReferralSource        IDNamePair             `json:"referralSource,omitempty"`
-	Industry              IDNamePair             `json:"industry,omitempty"`
-	CustomerSince         string                 `json:"customerSince,omitempty"` //date?
-	OnCreditHold          bool                   `json:"onCreditHold,omitempty"`
-	CreditLimit           float64                `json:"creditLimit,omitempty"`
-	WebSite               string                 `json:"webSite,omitempty"`
-	IsTaxExempt           bool                   `json:"isTaxExempt,omitempty"`
-	IsFinanceChargeExempt bool                   `json:"isFinanceChargeExempt,omitempty"`
-	PaymentTerm           IDNamePair             `json:"paymentTerm,omitempty"`
-	BillToLocation        IDNamePair             `json:"billToLocation,omitempty"`
-	ShipToLocation        IDNamePair             `json:"shipToLocation,omitempty"`
-	Phones                []customerPhones       `json:"phones,omitempty"`
-	PrimaryAddress        customerAddress        `json:"primaryAddress,omitempty"`
-	PriceList             IDNamePair             `json:"priceList"`
-	CustomFields          []customerCustomFields `json:"customFields,omitempty"`
-	DateCreated           string                 `json:"dateCreated,omitempty"`
-	CreatedBy             IDNamePair             `json:"createdBy,omitempty"`
-	LastUpdatedDate       string                 `json:"lastUpdatedDate,omitempty"`
-	LastUpdatedBy         IDNamePair             `json:"lastUpdatedBy,omitempty"`
-	Currency              StrivenCurrency        `json:"currency,omitempty"`
+	ID                    int              `json:"id"`
+	Name                  string           `json:"name"`
+	Number                string           `json:"number,omitempty"`
+	IsVendor              bool             `json:"isVendor,omitempty"`
+	IsConsumerAccount     bool             `json:"isConsumerAccount,omitempty"`
+	PrimaryContact        IDNamePair       `json:"primaryContact,omitempty"`
+	Status                IDNamePair       `json:"status"`
+	Categories            []IDNamePair     `json:"categories,omitempty"`
+	ReferralSource        IDNamePair       `json:"referralSource,omitempty"`
+	Industry              IDNamePair       `json:"industry,omitempty"`
+	CustomerSince         string           `json:"customerSince,omitempty"` //date?
+	OnCreditHold          bool             `json:"onCreditHold,omitempty"`
+	CreditLimit           float64          `json:"creditLimit,omitempty"`
+	WebSite               string           `json:"webSite,omitempty"`
+	IsTaxExempt           bool             `json:"isTaxExempt,omitempty"`
+	IsFinanceChargeExempt bool             `json:"isFinanceChargeExempt,omitempty"`
+	PaymentTerm           IDNamePair       `json:"paymentTerm,omitempty"`
+	BillToLocation        IDNamePair       `json:"billToLocation,omitempty"`
+	ShipToLocation        IDNamePair       `json:"shipToLocation,omitempty"`
+	Phones                []APIPhone       `json:"phones,omitempty"`
+	PrimaryAddress        APIAddress       `json:"primaryAddress,omitempty"`
+	PriceList             IDNamePair       `json:"priceList"`
+	CustomFields          []APICustomField `json:"customFields,omitempty"`
+	DateCreated           string           `json:"dateCreated,omitempty"`
+	CreatedBy             IDNamePair       `json:"createdBy,omitempty"`
+	LastUpdatedDate       string           `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedBy         IDNamePair       `json:"lastUpdatedBy,omitempty"`
+	Currency              APICurrency      `json:"currency,omitempty"`
 }
 
 // New (Customers) will create a new Customer
@@ -133,40 +102,44 @@ func (*customersFunc) GetByID(customerID int) (CustomerDetail, error) {
 	return r, nil
 }
 
-//CustomerContactAPIResult is the structure of a request to Striven to /v1/customers/{ID}/contacts
-type CustomerContactAPIResult struct {
-	TotalCount int `json:"totalCount"`
-	Data       []struct {
-		ID        int    `json:"id"`
-		FirstName string `json:"firstName"`
-		LastName  string `json:"lastName"`
-		Title     string `json:"title"`
-		Phone     string `json:"phone"`
-		Email     string `json:"email"`
-		IsPrimary bool   `json:"isPrimary"`
-		Active    bool   `json:"active"`
-	} `json:"data"`
+type customerContactAPIResult struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Title     string `json:"title"`
+	Phone     string `json:"phone"`
+	Email     string `json:"email"`
+	IsPrimary bool   `json:"isPrimary"`
+	Active    bool   `json:"active"`
+}
+
+//CustomersContactAPIResult is the structure of a request to Striven to /v1/customers/{ID}/contacts
+type CustomersContactAPIResult struct {
+	TotalCount int                        `json:"totalCount"`
+	Data       []customerContactAPIResult `json:"data"`
 }
 
 //GetByCustomerID (Contacts) Returns a list of contacts associated with a customer
-func (*customerContentContactsFunc) GetByCustomerID(customerID int) (CustomerContactAPIResult, error) {
+func (*customersContentContactsFunc) GetByCustomerID(customerID int) (CustomersContactAPIResult, error) {
 	resp, err := stv.apiGet(fmt.Sprintf("v1/customers/%d/contacts", customerID))
 	if resp.StatusCode() != 200 || err != nil {
-		return CustomerContactAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Client", resp.StatusCode())
+		return CustomersContactAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Client", resp.StatusCode())
 	}
-	var r CustomerContactAPIResult
+	var r CustomersContactAPIResult
 	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }
 
+type customerHubContentGroupAPIResult struct {
+	ID        int    `json:"id"`
+	Name      string `json:"name"`
+	IsDefault bool   `json:"isDefault"`
+}
+
 // CustomersHubContentGroupAPIResult is the structure of a request to Striven to GetContentGroups()
 type CustomersHubContentGroupAPIResult struct {
-	TotalCount int `json:"totalCount"`
-	Data       []struct {
-		ID        int    `json:"id"`
-		Name      string `json:"name"`
-		IsDefault bool   `json:"isDefault"`
-	}
+	TotalCount int                                `json:"totalCount"`
+	Data       []customerHubContentGroupAPIResult `json:"data"`
 }
 
 // CustomersGetContentGroups returns a list of Hub content groups for a given Client.

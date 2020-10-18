@@ -21,7 +21,7 @@ type PoolsAPIResult []PoolAPIResult
 func (*poolsFunc) GetAll() (PoolsAPIResult, error) {
 
 	resp, err := stv.apiGet("v1/pools")
-	if err != nil {
+	if resp.StatusCode() != 200 || err != nil {
 		return PoolsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Pools", resp.StatusCode())
 	}
 	var r PoolsAPIResult

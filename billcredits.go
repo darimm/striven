@@ -70,7 +70,7 @@ type BillCreditAPIResult struct {
 	Reviewed            bool                 `json:"reviewed"`
 	DateReviewed        Timestamp            `json:"dateReviewed,omitempty"`
 	ReviewedBy          IDNamePair           `json:"reviewedBy,omitempty"`
-	Currency            StrivenCurrency      `json:"currency"`
+	Currency            APICurrency          `json:"currency"`
 }
 
 // GetByID (Tasks) returns a single Task
@@ -81,6 +81,9 @@ func (*billCreditFunc) GetByID(billCreditID int) (BillCreditAPIResult, error) {
 		return BillCreditAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Task ID: %d", resp.StatusCode(), billCreditID)
 	}
 	var r BillCreditAPIResult
-	json.Unmarshal([]byte(resp.Body()), &r)
+	err = json.Unmarshal([]byte(resp.Body()), &r)
+	if err != nil {
+		return BillCreditAPIResult{}, err
+	}
 	return r, nil
 }

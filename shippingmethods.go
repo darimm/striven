@@ -22,7 +22,7 @@ type ShippingMethodsAPIResult []ShippingMethodAPIResult
 func (*shippingMethodsFunc) GetAll() (ShippingMethodsAPIResult, error) {
 
 	resp, err := stv.apiGet("v1/shipping-methods")
-	if err != nil {
+	if resp.StatusCode() != 200 || err != nil {
 		return ShippingMethodsAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Shipping Methods", resp.StatusCode())
 	}
 	var r ShippingMethodsAPIResult
