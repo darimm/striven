@@ -20,75 +20,67 @@ type contentGroupsFunc struct {
 type customerContentContactsFunc struct {
 }
 
-type IDNamePair struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+type customerPhones struct {
+	ID          int        `json:"id"`
+	PhoneType   IDNamePair `json:"phoneType,omitempty"`
+	Number      string     `json:"number"`
+	Extension   string     `json:"extension"`
+	IsPreferred bool       `json:"isPreferred"`
+	Active      bool       `json:"active"`
+}
+
+type customerAddress struct {
+	Address1    string  `json:"address1"`
+	Address2    string  `json:"address2"`
+	Address3    string  `json:"address3"`
+	City        string  `json:"city"`
+	State       string  `json:"state"`
+	PostalCode  string  `json:"postalCode"`
+	Country     string  `json:"country"`
+	Latitude    float64 `json:"latitude"`
+	Longitude   float64 `json:"longitude"`
+	FullAddress string  `json:"fullAddress"`
+}
+
+type customerCustomFields struct {
+	ID         int        `json:"id"`
+	Name       string     `json:"name"`
+	FieldType  IDNamePair `json:"fieldType"`
+	SourceID   int        `json:"sourceId"`
+	Value      string     `json:"value"`
+	IsRequired bool       `json:"isRequired"`
 }
 
 // CustomerDetail is the structure of a single Customer from the customers APi
 type CustomerDetail struct {
-	ID                    int          `json:"id"`
-	Name                  string       `json:"name"`
-	Number                string       `json:"number,omitempty"`
-	IsVendor              bool         `json:"isVendor,omitempty"`
-	IsConsumerAccount     bool         `json:"isConsumerAccount,omitempty"`
-	PrimaryContact        IDNamePair   `json:"primaryContact,omitempty"`
-	Status                IDNamePair   `json:"status"`
-	Categories            []IDNamePair `json:"categories,omitempty"`
-	ReferralSource        IDNamePair   `json:"referralSource,omitempty"`
-	Industry              IDNamePair   `json:"industry,omitempty"`
-	CustomerSince         string       `json:"customerSince,omitempty"` //date?
-	OnCreditHold          bool         `json:"onCreditHold,omitempty"`
-	CreditLimit           float64      `json:"creditLimit,omitempty"`
-	WebSite               string       `json:"webSite,omitempty"`
-	IsTaxExempt           bool         `json:"isTaxExempt,omitempty"`
-	IsFinanceChargeExempt bool         `json:"isFinanceChargeExempt,omitempty"`
-	PaymentTerm           IDNamePair   `json:"paymentTerm,omitempty"`
-	BillToLocation        IDNamePair   `json:"billToLocation,omitempty"`
-	ShipToLocation        IDNamePair   `json:"shipToLocation,omitempty"`
-	Phones                []struct {
-		ID        int `json:"id"`
-		PhoneType struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		} `json:"phoneType,omitempty"`
-		Number      string `json:"number"`
-		Extension   string `json:"extension"`
-		IsPreferred bool   `json:"isPreferred"`
-		Active      bool   `json:"active"`
-	} `json:"phones,omitempty"`
-	PrimaryAddress struct {
-		Address1    string  `json:"address1"`
-		Address2    string  `json:"address2"`
-		Address3    string  `json:"address3"`
-		City        string  `json:"city"`
-		State       string  `json:"state"`
-		PostalCode  string  `json:"postalCode"`
-		Country     string  `json:"country"`
-		Latitude    float64 `json:"latitude"`
-		Longitude   float64 `json:"longitude"`
-		FullAddress string  `json:"fullAddress"`
-	} `json:"primaryAddress,omitempty"`
-	PriceList    IDNamePair `json:"priceList"`
-	CustomFields []struct {
-		ID        int    `json:"id"`
-		Name      string `json:"name"`
-		FieldType struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		} `json:"fieldType"`
-		SourceID   int    `json:"sourceId"`
-		Value      string `json:"value"`
-		IsRequired bool   `json:"isRequired"`
-	} `json:"customFields,omitempty"`
-	DateCreated     string     `json:"dateCreated,omitempty"`
-	CreatedBy       IDNamePair `json:"createdBy,omitempty"`
-	LastUpdatedDate string     `json:"lastUpdatedDate,omitempty"`
-	LastUpdatedBy   IDNamePair `json:"lastUpdatedBy,omitempty"`
-	Currency        struct {
-		CurrencyISOCode string  `json:"currencyISOCode"`
-		ExchangeRate    float64 `json:"exchangeRate"`
-	} `json:"currency,omitempty"`
+	ID                    int                    `json:"id"`
+	Name                  string                 `json:"name"`
+	Number                string                 `json:"number,omitempty"`
+	IsVendor              bool                   `json:"isVendor,omitempty"`
+	IsConsumerAccount     bool                   `json:"isConsumerAccount,omitempty"`
+	PrimaryContact        IDNamePair             `json:"primaryContact,omitempty"`
+	Status                IDNamePair             `json:"status"`
+	Categories            []IDNamePair           `json:"categories,omitempty"`
+	ReferralSource        IDNamePair             `json:"referralSource,omitempty"`
+	Industry              IDNamePair             `json:"industry,omitempty"`
+	CustomerSince         string                 `json:"customerSince,omitempty"` //date?
+	OnCreditHold          bool                   `json:"onCreditHold,omitempty"`
+	CreditLimit           float64                `json:"creditLimit,omitempty"`
+	WebSite               string                 `json:"webSite,omitempty"`
+	IsTaxExempt           bool                   `json:"isTaxExempt,omitempty"`
+	IsFinanceChargeExempt bool                   `json:"isFinanceChargeExempt,omitempty"`
+	PaymentTerm           IDNamePair             `json:"paymentTerm,omitempty"`
+	BillToLocation        IDNamePair             `json:"billToLocation,omitempty"`
+	ShipToLocation        IDNamePair             `json:"shipToLocation,omitempty"`
+	Phones                []customerPhones       `json:"phones,omitempty"`
+	PrimaryAddress        customerAddress        `json:"primaryAddress,omitempty"`
+	PriceList             IDNamePair             `json:"priceList"`
+	CustomFields          []customerCustomFields `json:"customFields,omitempty"`
+	DateCreated           string                 `json:"dateCreated,omitempty"`
+	CreatedBy             IDNamePair             `json:"createdBy,omitempty"`
+	LastUpdatedDate       string                 `json:"lastUpdatedDate,omitempty"`
+	LastUpdatedBy         IDNamePair             `json:"lastUpdatedBy,omitempty"`
+	Currency              StrivenCurrency        `json:"currency,omitempty"`
 }
 
 // New (Customers) will create a new Customer

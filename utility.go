@@ -9,6 +9,18 @@ import (
 	resty "github.com/go-resty/resty/v2"
 )
 
+// IDNamePair is used pretty much everywhere in the API.
+type IDNamePair struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+//StrivenCurrency is the standard structure for displaying currency in Striven
+type StrivenCurrency struct {
+	CurrencyISOCode string  `json:"currencyISOCode"`
+	ExchangeRate    float64 `json:"exchangeRate"`
+}
+
 func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 	err := s.validateAccessToken()
 	if err != nil {
@@ -31,17 +43,19 @@ func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 // Timestamp is a custom time field that can be unmarshalled direct from striven because it's timestamp is not RFC3339
 type Timestamp time.Time
 
-const TimestampFormat = time.RFC3339 // same as ISO8601
+const timestampFormat = time.RFC3339 // same as ISO8601
 
 var (
 	_ json.Unmarshaler = (*Timestamp)(nil)
 	_ json.Marshaler   = (*Timestamp)(nil)
 )
 
+// NewTimestamp returns a new Timestamp formatted time based on a real golang time
 func NewTimestamp(t time.Time) Timestamp {
 	return Timestamp(t)
 }
 
+// NowTimestamp returns a new timestamp formatted time with the current time.
 func NowTimestamp() Timestamp {
 	return NewTimestamp(time.Now())
 }
@@ -58,7 +72,7 @@ func (t *Timestamp) UnmarshalJSON(v []byte) error {
 	if err != nil {
 		panic("Cannot load Time America/New_York")
 	}
-	r, err := time.ParseInLocation("2006-01-02T15:04:05.999", str, tz)
+	r, err := time.ParseInLocation("2006-01-02T15:04:05.999999", str, tz)
 	if err != nil {
 		return err
 	}
@@ -74,17 +88,20 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	return []byte(t.Format(TimestampFormat)), nil
+	return []byte(t.Format(timestampFormat)), nil
 }
 
+// IsValid just returns whether or not a time is valid.
 func (t Timestamp) IsValid() bool {
 	return !t.Time().IsZero()
 }
 
+// Format is an Implementaion of the built in time lib's Format function
 func (t Timestamp) Format(fmt string) string {
 	return t.Time().Format(fmt)
 }
 
+// Time is an Implementation of the built in time lib's Time function
 func (t Timestamp) Time() time.Time {
 	return time.Time(t)
 }
