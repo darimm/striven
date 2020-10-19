@@ -5,7 +5,25 @@ import (
 	"fmt"
 )
 
-type billCreditFunc struct{}
+type billCreditNotesFunc struct{}
+
+type billCreditAttachmentsFunc struct{}
+
+type billCreditFunc struct {
+	Notes       billCreditNotesFunc
+	Attachments billCreditAttachmentsFunc
+}
+
+//BillCreditNotes is the return structure for a call to https://api.striven.com/Help/Api/GET-v1-bill-credits-id-notes_PageIndex_PageSize
+type BillCreditNotes struct {
+	TotalCount int              `json:"totalCount"`
+	Data       []billCreditNote `json:"data,omitempty"`
+}
+
+type billCreditNote struct {
+	Notes     string     `json:"notes"`
+	CreatedBy IDNamePair `json:"CreatedBy"`
+}
 
 //vendorRef is an IDName pair with an added Number field that is a string which is used for synchronization with external systems.
 type vendorRef struct {
@@ -73,17 +91,79 @@ type BillCreditAPIResult struct {
 	Currency            APICurrency          `json:"currency"`
 }
 
-// GetByID (Tasks) returns a single Task
+type billCreditAttachment struct {
+	ID               int        `json:"id"`
+	FileName         string     `json:"fileName"`
+	OriginalFileName string     `json:"originalFileName"`
+	FilePath         string     `json:"filePath"`
+	UploadedBy       IDNamePair `json:"uploadedBy"`
+	VisibleOnPortal  bool       `json:"visibleOnPortal"`
+	IsDefault        bool       `json:"isDefault"`
+	DateCreated      string     `json:"dateCreated"`
+}
+
+// BillCreditAttachmentAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-bill-credits-id-attachments
+type BillCreditAttachmentAPIResult struct {
+	TotalCount int                    `json:"totalCount"`
+	Data       []billCreditAttachment `json:"data"`
+}
+
+// GetByID (BillCredits) returns a single Bill Credit by ID
 func (*billCreditFunc) GetByID(billCreditID int) (BillCreditAPIResult, error) {
 
 	resp, err := stv.apiGet(fmt.Sprintf("v1/bill-credits/%d", billCreditID))
 	if resp.StatusCode() != 200 || err != nil {
-		return BillCreditAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Task ID: %d", resp.StatusCode(), billCreditID)
+		return BillCreditAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Bill Credit ID: %d", resp.StatusCode(), billCreditID)
 	}
 	var r BillCreditAPIResult
 	err = json.Unmarshal([]byte(resp.Body()), &r)
 	if err != nil {
 		return BillCreditAPIResult{}, err
+	}
+	return r, nil
+}
+
+// GetByID (BillCreditAttachments) returns a collection of Bill Credit Attachments attached to a Bill Credit by Bill Credit ID
+func (*billCreditAttachmentsFunc) GetByID(billCreditID int) (BillCreditAttachmentAPIResult, error) {
+
+	resp, err := stv.apiGet(fmt.Sprintf("v1/bill-credits/%d/attachments", billCreditID))
+	if resp.StatusCode() != 200 || err != nil {
+		return BillCreditAttachmentAPIResult{}, fmt.Errorf("Response Status Code: %d, Error retrieving Bill Credit Attachments for ID: %d", resp.StatusCode(), billCreditID)
+	}
+	var r BillCreditAttachmentAPIResult
+	err = json.Unmarshal([]byte(resp.Body()), &r)
+	if err != nil {
+		return BillCreditAttachmentAPIResult{}, err
+	}
+	return r, nil
+}
+
+// GetByID (BillCreditNotes) returns a list of Bill Credits Passing a single int specifies the BillCredit ID
+// Passing 2 ints will also specify the page to retrieve (of default 100 size pages), a 3rd int will set the
+// page size. Any subsequent integers are ignored.
+func (*billCreditNotesFunc) GetByID(params ...int) (BillCreditNotes, error) {
+
+	var url string
+
+	switch len(params) {
+	case 3:
+		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], params[2])
+	case 2:
+		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], 100)
+	case 1:
+		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], 0, 100)
+	default:
+		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], params[2])
+	}
+
+	resp, err := stv.apiGet(url)
+	if resp.StatusCode() != 200 || err != nil {
+		return BillCreditNotes{}, fmt.Errorf("Response Status Code: %d, Error retrieving Bill Credits", resp.StatusCode())
+	}
+	var r BillCreditNotes
+	err = json.Unmarshal([]byte(resp.Body()), &r)
+	if err != nil {
+		return BillCreditNotes{}, err
 	}
 	return r, nil
 }

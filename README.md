@@ -30,6 +30,10 @@ APIs Implemented (Checkmark means Completely implemented)
 
 - [X] Access Tokens  
 `New(CustomerID,CustomerSecret)` implements https://api.striven.com/v1/apitoken  
+- [ ] BillCredits  
+`BillCredits.GetByID(billCreditID int)` implements https://api.striven.com/v1/bill-credits/{billCreditID}  
+`BillCredits.Notes.GetByID(params ...int)` implements https://api.striven.com/Help/Api/GET-v1-bill-credits-id-notes_PageIndex_PageSize  
+`BillCredits.Attachments.GetByID()` implements https://api.striven.com/Help/Api/GET-v1-bill-credits-id-attachments partially. 
 - [X] Classes  
 `Classes.GetAll()` implements https://api.striven.com/v1/classes  
 - [ ] Contacts  
@@ -68,7 +72,6 @@ APIs Implemented (Checkmark means Completely implemented)
 
 APIs Not Implemented
 
-- [ ] BillCredits  
 - [ ] Bills  
 - [ ] Categories  
 - [ ] CreditMemos  
