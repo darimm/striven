@@ -241,8 +241,10 @@ func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 		SetHeader("Content-Type", "application/json").
 		Get(fmt.Sprintf("%s%s", StrivenURL, URI))
 
-	if resp.StatusCode() != 200 || err != nil {
-		return nil, fmt.Errorf("Error Code: %d The error returned was: %v - %w", resp.StatusCode(), err, err)
+	returncode := resp.StatusCode()
+
+	if returncode != 200 || err != nil {
+		return resp, fmt.Errorf("An Error occurred. See the Response Body for details")
 	}
 
 	return resp, nil
