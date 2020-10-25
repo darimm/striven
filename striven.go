@@ -29,6 +29,7 @@ type Striven struct {
 	BillCredits        billCreditFunc
 	Classes            classesFunc
 	Contacts           contactsFunc
+	CustomerAssets     customerAssetsFunc
 	Customers          customersFunc
 	CustomLists        customListsFunc
 	Employees          employeesFunc

@@ -102,6 +102,8 @@ type billCreditAttachment struct {
 	DateCreated      string     `json:"dateCreated"`
 }
 
+//BillCreditSearchParameters is the JSON structure needed to search for BillCredits
+
 // BillCreditAttachmentAPIResult is the overall structure for an API return from https://api.striven.com/Help/Api/GET-v1-bill-credits-id-attachments
 type BillCreditAttachmentAPIResult struct {
 	TotalCount int                    `json:"totalCount"`

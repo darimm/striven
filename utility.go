@@ -31,11 +31,27 @@ const (
 )
 
 //Customer Asset Status
-const (
-	CustomerAssetPending = iota + 15
-	CustomerAssetInService
-	CustomerAssetRetired
-	CustomerAssetUnsupported = 148
+var (
+	// AssetStatusOutOfServiceParam is the Static Type for an Out of Service Asset Status
+	AssetStatusOutOfServiceParam = IDNamePair{
+		ID:   15,
+		Name: "Out of Service",
+	}
+	// AssetStatusInServiceParam is the Static Type for an In Service Asset Status
+	AssetStatusInServiceParam = IDNamePair{
+		ID:   16,
+		Name: "In Service",
+	}
+	// AssetStatusRetiredParam is the Static Type for a Retired Asset Status
+	AssetStatusRetiredParam = IDNamePair{
+		ID:   17,
+		Name: "Retired",
+	}
+	// AssetStatusUnsupportedParam is the Static Type for an Unsupported Asset Status
+	AssetStatusUnsupportedParam = IDNamePair{
+		ID:   148,
+		Name: "Unsupported",
+	}
 )
 
 //Customer/Vendor Status
@@ -228,6 +244,12 @@ type APIPhone struct {
 	Active      bool       `json:"active"`
 }
 
+//APIDateRange is an API date searching construct
+type APIDateRange struct {
+	DateFrom Timestamp `json:"dateFrom"`
+	DateTo   Timestamp `json:"dateTo"`
+}
+
 //apiGet powers all of the Striven API read-only GET calls for all submodules
 func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 	err := s.validateAccessToken()
@@ -273,7 +295,6 @@ func NowTimestamp() Timestamp {
 // UnmarshalJSON parses a nullable RFC3339 string into time.
 func (t *Timestamp) UnmarshalJSON(v []byte) error {
 	str := strings.Trim(string(v), `"`)
-	//str := fmt.Sprintf("%s%s", strings.Trim(string(v), "\""), "Z")
 	if str == "null" {
 		return nil
 	}
@@ -282,7 +303,7 @@ func (t *Timestamp) UnmarshalJSON(v []byte) error {
 	if err != nil {
 		panic("Cannot load Time America/New_York")
 	}
-	r, err := time.ParseInLocation("2006-01-02T15:04:05.999999", str, tz)
+	r, err := time.ParseInLocation("2006-01-02T15:04:05.999", str, tz)
 	if err != nil {
 		return err
 	}
@@ -298,7 +319,7 @@ func (t Timestamp) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 
-	return []byte(t.Format(timestampFormat)), nil
+	return json.Marshal(t.Format("2006-01-02T15:04:05.999"))
 }
 
 // IsValid just returns whether or not a time is valid.
