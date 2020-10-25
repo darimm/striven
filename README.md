@@ -37,7 +37,16 @@ APIs Implemented (Checkmark means Completely implemented)
 - [X] Classes  
 `Classes.GetAll()` implements https://api.striven.com/v1/classes  
 - [ ] Contacts  
-`Contacts.GetByID(contactID int)` implements https://api.striven.com/Help/Api/GET-v1-contacts-id
+`Contacts.GetByID(contactID int)` implements https://api.striven.com/Help/Api/GET-v1-contacts-id  
+- [X] CustomerAssets  
+`CustomerAssets.Create(asset CustomerAsset)` implements https://api.striven.com/Help/Api/POST-v1-customer-assets for creating  
+`CustomerAssets.Update(asset CustomerAsset)` implements https://api.striven.com/Help/Api/POST-v1-customer-assets for updating  
+`CustomerAssets.GetByID(assetID int)` implements https://api.striven.com/Help/Api/GET-v1-customer-assets-id  
+`CustomerAssets.Search(param CustomerAssetSearchParam)` implements https://api.striven.com/Help/Api/POST-v1-customer-assets-search  
+`CustomerAssets.Types.GetAll()` implements https://api.striven.com/Help/Api/GET-v1-customer-assets-types  
+`CustomerAssets.CustomFields` implements https://api.striven.com/Help/Api/GET-v1-customer-assets-id-custom-fields  
+`CustomerAssets.Status` implements https://api.striven.com/Help/Api/POST-v1-customer-assets-id-update-status  
+`CustomerAssets.MaintenanceSchedule` implements https://api.striven.com/Help/Api/POST-v1-customer-assets-id-maintenance-schedule
 - [ ] Customers  
 `Customers.GetByID(customerID int)` implements https://api.striven.com/v1/customers/{customerID}
 `Customers.Contacts.GetByCustomerID(customerID int)` implements https://api.striven.com/v1/customers/{customerID}/contacts
@@ -74,8 +83,7 @@ APIs Not Implemented
 
 - [ ] Bills  
 - [ ] Categories  
-- [ ] CreditMemos  
-- [ ] CustomerAssets  
+- [ ] CreditMemos   
 - [ ] GLAcconuts  
 - [ ] Invoices  
 - [ ] Items  
