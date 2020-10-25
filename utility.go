@@ -193,7 +193,7 @@ const (
 // IDNamePair is used pretty much everywhere in the API.
 type IDNamePair struct {
 	ID   int    `json:"id"`
-	Name string `json:"name"`
+	Name string `json:"name,omitempty"`
 }
 
 // APICurrency is the standard structure for displaying currency in Striven

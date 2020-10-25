@@ -45,9 +45,10 @@ type CustomerAssetStatusParam struct {
 // The "ID" field here is the Maintenance Schedule ID. As far as I can tell there's no way to get it other than to query an asset, so while this
 // endpoit can be used to create a Maintenance Schedule, there is a strong possibility that you would just update an existing one and break other
 // assets if you're not extremely careful. Use at your own risk. I could also be completely wrong here, there's almost no documentation around this.
-// it is also the entire Customer Asset Maintenance Schedule object that is returned as part of an asset.
+// it is also the entire Customer Asset Maintenance Schedule object that is returned as part of an asset. Caveat 2: If you are creating a new maintenance
+// schedule for an asset that doesn't have one, you have to skip providing an ID for it to work.
 type CustomerAssetMaintenanceScheduleParam struct {
-	ID        int       `json:"id"`
+	ID        int       `json:"id,omitempty"`
 	AssetID   int       `json:"assetId"`
 	StartDate Timestamp `json:"startDate"`
 	EndDate   Timestamp `json:"endDate"`
@@ -72,14 +73,14 @@ type CustomerAssetSearchResult struct {
 	LastUpdatedDate Timestamp  `json:"lastUpdatedDate"`
 }
 
-// CustomerAsset is a single Customer Asset, returned from a Get by ID
+// CustomerAsset is a single Customer Asset, returned from a Get by ID also used for creating new Assets
 type CustomerAsset struct {
-	ID                  int                                     `json:"id"`
+	ID                  int                                     `json:"id"` //set to 0 for a new asset
 	AssetName           string                                  `json:"assetName"`
 	AssetType           IDNamePair                              `json:"assetType"`
 	Customer            IDNamePair                              `json:"customer"`
 	CustomerLocation    IDNamePair                              `json:"customerLocation"`
-	Status              IDNamePair                              `json:"status"`
+	Status              IDNamePair                              `json:"status,omitempty"`
 	StatusNote          string                                  `json:"statusNote,omitempty"`
 	PurchasePrice       float64                                 `json:"purchasePrice,omitempty"`
 	VisibleOnPortal     bool                                    `json:"visibleOnPortal"`
@@ -119,12 +120,42 @@ type CustomerAssetCustomFieldsAPIResult []struct {
 	APICustomField
 }
 
+// Create (CustomerAsset) Creates a new asset in the system
+func (c *customerAssetsFunc) Create(asset CustomerAsset) (CustomerAsset, error) {
+	asset.ID = 0
+	return c.Update(asset)
+}
+
+// Update (CustomerAsset) Updates an existing asset in the system.
+func (*customerAssetsFunc) Update(asset CustomerAsset) (CustomerAsset, error) {
+	var headers map[string]string
+
+	headers = (map[string]string{
+		"Content-Type": "application/json",
+		"Accept":       "application/json",
+	})
+
+	client := resty.New()
+	resp, err := client.R().
+		SetAuthToken(stv.Token.AccessToken).
+		SetHeaders(headers).
+		SetBody(asset).
+		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customer-assets"))
+	if resp.StatusCode() != 200 || err != nil {
+		return CustomerAsset{}, fmt.Errorf("Response Code: %d, Error: %+v", resp.StatusCode(), err)
+	}
+
+	var r CustomerAsset
+	json.Unmarshal([]byte(resp.Body()), &r)
+	return r, nil
+}
+
 // GetByID (CustomerAssets) returns a single Asset by ID
 func (*customerAssetsFunc) GetByID(assetID int) (CustomerAsset, error) {
 
 	resp, err := stv.apiGet(fmt.Sprintf("v1/customer-assets/%d", assetID))
 	if resp.StatusCode() != 200 || err != nil {
-		return CustomerAsset{}, fmt.Errorf("Response Status Code: %d, Error retrieving Contact", resp.StatusCode())
+		return CustomerAsset{}, fmt.Errorf("Response Status Code: %d, Error retrieving Customer Asset", resp.StatusCode())
 	}
 	var r CustomerAsset
 	err = json.Unmarshal([]byte(resp.Body()), &r)
