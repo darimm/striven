@@ -6,6 +6,9 @@ import (
 	"strings"
 	"time"
 
+	//Striven is retarded so I need tzdata any time this lib is used.
+	_ "time/tzdata"
+
 	resty "github.com/go-resty/resty/v2"
 )
 
@@ -335,4 +338,11 @@ func (t Timestamp) Format(fmt string) string {
 // Time is an Implementation of the built in time lib's Time function
 func (t Timestamp) Time() time.Time {
 	return time.Time(t)
+}
+
+func jsonHeaders() map[string]string {
+	return (map[string]string{
+		"Content-Type": "application/json",
+		"Accept":       "application/json",
+	})
 }

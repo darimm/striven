@@ -68,17 +68,11 @@ func (*customersFunc) New(customer CustomerDetail) (interface{}, error) { //(Cus
 		}
 		fmt.Println("Successfully Marshalled JSON")
 	*/
-	var headers map[string]string
-
-	headers = (map[string]string{
-		"Content-Type": "application/json",
-		"Accept":       "application/json",
-	})
 
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(stv.Token.AccessToken).
-		SetHeaders(headers).
+		SetHeaders(jsonHeaders()).
 		SetBody(customer).
 		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customers"))
 	if resp.StatusCode() != 200 || err != nil {

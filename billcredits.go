@@ -140,23 +140,21 @@ func (*billCreditAttachmentsFunc) GetByID(billCreditID int) (BillCreditAttachmen
 	return r, nil
 }
 
-// GetByID (BillCreditNotes) returns a list of Bill Credits Passing a single int specifies the BillCredit ID
-// Passing 2 ints will also specify the page to retrieve (of default 100 size pages), a 3rd int will set the
-// page size. Any subsequent integers are ignored.
-func (*billCreditNotesFunc) GetByID(params ...int) (BillCreditNotes, error) {
+//BillCreditNotesParams is the required data structure for passing to BillCreditNotes.GetByID
+type BillCreditNotesParams struct {
+	BillCreditID int
+	PageIndex    int
+	PageSize     int
+}
 
-	var url string
+// GetByID (BillCreditNotes) returns a list of Bill Credit Notes for a given BillCreditID PageIndex is 0-based and maximum page size is 1000
+func (*billCreditNotesFunc) GetByID(params BillCreditNotesParams) (BillCreditNotes, error) {
 
-	switch len(params) {
-	case 3:
-		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], params[2])
-	case 2:
-		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], 100)
-	case 1:
-		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], 0, 100)
-	default:
-		url = fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params[0], params[1], params[2])
+	if params.PageSize > 1000 {
+		return BillCreditNotes{}, fmt.Errorf("Page size out of bounds. Maximum page size is 1000")
 	}
+
+	url := fmt.Sprintf("v1/bill-credits/%d/notes?PageIndex=%d&PageSize=%d", params.BillCreditID, params.PageIndex, params.PageSize)
 
 	resp, err := stv.apiGet(url)
 	if resp.StatusCode() != 200 || err != nil {

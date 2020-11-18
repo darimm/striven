@@ -128,17 +128,11 @@ func (c *customerAssetsFunc) Create(asset CustomerAsset) (CustomerAsset, error) 
 
 // Update (CustomerAsset) Updates an existing asset in the system.
 func (*customerAssetsFunc) Update(asset CustomerAsset) (CustomerAsset, error) {
-	var headers map[string]string
-
-	headers = (map[string]string{
-		"Content-Type": "application/json",
-		"Accept":       "application/json",
-	})
 
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(stv.Token.AccessToken).
-		SetHeaders(headers).
+		SetHeaders(jsonHeaders()).
 		SetBody(asset).
 		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customer-assets"))
 	if resp.StatusCode() != 200 || err != nil {
@@ -168,25 +162,21 @@ func (*customerAssetsFunc) GetByID(assetID int) (CustomerAsset, error) {
 // Search returns a collection of CustomerAssets
 func (*customerAssetsFunc) Search(param CustomerAssetSearchParam) (CustomerAssetsAPIResult, error) {
 
-	var headers map[string]string
-
-	headers = (map[string]string{
-		"Content-Type": "application/json",
-		"Accept":       "application/json",
-	})
-
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(stv.Token.AccessToken).
-		SetHeaders(headers).
+		SetHeaders(jsonHeaders()).
 		SetBody(param).
 		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customer-assets/search"))
 	if err != nil {
-		return CustomerAssetsAPIResult{}, fmt.Errorf("%+v", err)
+		return CustomerAssetsAPIResult{}, err
 	}
 
 	var r CustomerAssetsAPIResult
-	json.Unmarshal([]byte(resp.Body()), &r)
+	err = json.Unmarshal([]byte(resp.Body()), &r)
+	if err != nil {
+		return CustomerAssetsAPIResult{}, err
+	}
 	return r, nil
 }
 
@@ -223,12 +213,7 @@ func (*customerAssetsCustomFieldsFunc) GetByID(assetID int) (CustomerAssetCustom
 // With the naming scheme CustomerAsset<Status>Param
 func (*customerAssetsStatusFunc) UpdateByID(ID int, param IDNamePair, note string) (interface{}, error) {
 
-	var headers map[string]string
-
-	headers = (map[string]string{
-		"Content-Type": "application/json",
-		"Accept":       "application/json",
-	})
+	headers := jsonHeaders()
 
 	p := CustomerAssetStatusParam{
 		Status:     param,
@@ -254,20 +239,13 @@ func (*customerAssetsStatusFunc) UpdateByID(ID int, param IDNamePair, note strin
 // With the naming scheme CustomerAsset<Status>Param
 func (*customerAssetsMaintenanceFunc) UpdateByID(ID int, param CustomerAssetMaintenanceScheduleParam) (interface{}, error) {
 
-	var headers map[string]string
-
-	headers = (map[string]string{
-		"Content-Type": "application/json",
-		"Accept":       "application/json",
-	})
-
 	//Enforce that the ID must be correct, regardless of the validity of the object passed in.
 	param.AssetID = ID
 
 	client := resty.New()
 	resp, err := client.R().
 		SetAuthToken(stv.Token.AccessToken).
-		SetHeaders(headers).
+		SetHeaders(jsonHeaders()).
 		SetBody(param).
 		Post(fmt.Sprintf("%s%s", StrivenURL, fmt.Sprintf("/v1/customer-assets/%d/maintenance-schedule", ID)))
 	if err != nil {
