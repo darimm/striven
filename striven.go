@@ -1,6 +1,7 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -25,6 +26,8 @@ type strivenToken struct {
 type Striven struct {
 	ClientID           string
 	ClientSecret       string
+	Context            context.Context
+	CancelContext      context.CancelFunc
 	Token              strivenToken
 	BillCredits        billCreditFunc
 	Classes            classesFunc
@@ -47,21 +50,30 @@ type Striven struct {
 }
 
 //New is the constructor for an Striven Object. Changing the default ClientID and Secret will also invalidate the token
-func New(ID string, Secret string) *Striven {
+func New(ctx context.Context, ID string, Secret string) *Striven {
+	c, cancel := context.WithCancel(ctx)
 	stv = &Striven{
-		ClientID:     ID,
-		ClientSecret: Secret,
-		Token:        strivenToken{},
+		ClientID:      ID,
+		ClientSecret:  Secret,
+		Token:         strivenToken{},
+		Context:       c,
+		CancelContext: cancel,
 	}
-	stv.initializeToken()
+	err := stv.initialize()
+	if err != nil {
+		return &Striven{}
+	}
 	return stv
 }
 
-//initializeToken reaches out to the Striven API and uses your ClientID and ClientSecret to Generate an Striven Token
-func (s *Striven) initializeToken() error {
+//initialize reaches out to the Striven API and uses your ClientID and ClientSecret to Generate an Striven Token
+func (s *Striven) initialize() error {
 
+	c, cancel := context.WithTimeout(stv.Context, time.Second*10)
+	defer cancel()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(c).
 		SetHeader("Accept", "application/json").
 		SetHeader("Content-Type", "application/json").
 		SetBasicAuth(s.ClientID, s.ClientSecret).
@@ -87,9 +99,11 @@ func (s *Striven) initializeToken() error {
 
 //refreshAccessToken
 func (s *Striven) refreshAccessToken() error {
-
+	c, cancel := context.WithTimeout(stv.Context, time.Second*10)
+	defer cancel()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(c).
 		SetHeader("Accept", "application/json").
 		SetHeader("Content-Type", "application/json").
 		SetBasicAuth(s.ClientID, s.ClientSecret).
@@ -120,7 +134,7 @@ func (s *Striven) validateAccessToken() error {
 	}
 	err := s.refreshAccessToken()
 	if err != nil {
-		err := s.initializeToken()
+		err := s.initialize()
 		if err != nil {
 			return err
 		}

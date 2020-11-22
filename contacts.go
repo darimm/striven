@@ -1,6 +1,7 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -66,6 +67,8 @@ type ContactsAPIResult struct {
 }
 
 // ContactsParam is the Parameter to be passed for Creating or updating a contact.
+// Trying to figure out how I can work around the requirement that Phones/Emails/Address/CustomFields need to be pointers
+// for json Marshalling while empty. It's pretty gross as is, but it does work.
 type ContactsParam struct {
 	ID           int                `json:"id,omitempty"`
 	FirstName    string             `json:"firstName"`
@@ -99,8 +102,15 @@ func (*contactsFunc) GetByID(contactID int) (ContactsAPIResult, error) {
 // Search returns a collection of Contacts
 func (*contactsFunc) Search(param ContactsSearchParam) (ContactsSearchAPIResult, error) {
 
+	err := stv.validateAccessToken()
+	if err != nil {
+		return ContactsSearchAPIResult{}, err
+	}
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(param).
@@ -122,8 +132,17 @@ func (*contactsFunc) Update(c ContactsParam) (UpdatedContact, error) {
 
 	x, err := json.Marshal(c)
 	fmt.Println(string(x))
+
+	err = stv.validateAccessToken()
+	if err != nil {
+		return UpdatedContact{}, err
+	}
+
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(c).

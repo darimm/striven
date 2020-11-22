@@ -1,12 +1,13 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
-	//Striven is retarded so I need tzdata any time this lib is used.
+	//Striven time data is nonstandard so I need tzdata any time this lib is used.
 	_ "time/tzdata"
 
 	resty "github.com/go-resty/resty/v2"
@@ -259,9 +260,13 @@ func (s *Striven) apiGet(URI string) (*resty.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(s.Token.AccessToken).
 		SetHeader("Content-Type", "application/json").
 		Get(fmt.Sprintf("%s%s", StrivenURL, URI))

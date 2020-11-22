@@ -1,6 +1,7 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -68,9 +69,16 @@ func (*customersFunc) New(customer CustomerDetail) (interface{}, error) { //(Cus
 		}
 		fmt.Println("Successfully Marshalled JSON")
 	*/
+	err := stv.validateAccessToken()
+	if err != nil {
+		return nil, err
+	}
 
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(customer).
@@ -265,8 +273,17 @@ func (chd *CustomersHubDoc) uploadClientHubFile(localFilePath string) (int, erro
 	// The Remote File Name in Striven must be a unique identifier for the database. KSUIDs are guarenteed to be unique,
 	// so use two of them with a source-string tacked on in case Striven support needs to investigate something sourced from the API
 	var remoteFileName = fmt.Sprintf("%s-%s-%s", "striven-go", ksuid.New().String(), ksuid.New().String())
+
+	err = stv.validateAccessToken()
+	if err != nil {
+		return 401, err
+	}
+
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(headers).
 		SetFile(remoteFileName, localFilePath).

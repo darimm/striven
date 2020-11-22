@@ -1,6 +1,7 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -129,8 +130,15 @@ func (c *customerAssetsFunc) Create(asset CustomerAsset) (CustomerAsset, error) 
 // Update (CustomerAsset) Updates an existing asset in the system.
 func (*customerAssetsFunc) Update(asset CustomerAsset) (CustomerAsset, error) {
 
+	err := stv.validateAccessToken()
+	if err != nil {
+		return CustomerAsset{}, err
+	}
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(asset).
@@ -162,8 +170,15 @@ func (*customerAssetsFunc) GetByID(assetID int) (CustomerAsset, error) {
 // Search returns a collection of CustomerAssets
 func (*customerAssetsFunc) Search(param CustomerAssetSearchParam) (CustomerAssetsAPIResult, error) {
 
+	err := stv.validateAccessToken()
+	if err != nil {
+		return CustomerAssetsAPIResult{}, err
+	}
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(param).
@@ -213,17 +228,23 @@ func (*customerAssetsCustomFieldsFunc) GetByID(assetID int) (CustomerAssetCustom
 // With the naming scheme CustomerAsset<Status>Param
 func (*customerAssetsStatusFunc) UpdateByID(ID int, param IDNamePair, note string) (interface{}, error) {
 
-	headers := jsonHeaders()
-
 	p := CustomerAssetStatusParam{
 		Status:     param,
 		StatusNote: note,
 	}
 
+	err := stv.validateAccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
-		SetHeaders(headers).
+		SetHeaders(jsonHeaders()).
 		SetBody(p).
 		Post(fmt.Sprintf("%s%s", StrivenURL, fmt.Sprintf("/v1/customer-assets/%d/update-status", ID)))
 	if err != nil {
@@ -242,8 +263,15 @@ func (*customerAssetsMaintenanceFunc) UpdateByID(ID int, param CustomerAssetMain
 	//Enforce that the ID must be correct, regardless of the validity of the object passed in.
 	param.AssetID = ID
 
+	err := stv.validateAccessToken()
+	if err != nil {
+		return nil, err
+	}
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
 	client := resty.New()
 	resp, err := client.R().
+		SetContext(ctx).
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(param).
