@@ -1,8 +1,12 @@
 package striven
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"time"
+
+	resty "github.com/go-resty/resty/v2"
 )
 
 type tasksFunc struct{}
@@ -55,6 +59,38 @@ type TasksAPIResult struct {
 	CustomFields            []APICustomField `json:"customFields"`
 }
 
+//TaskCreateParams are the parameters for creating a task in Striven
+type TaskCreateParams struct {
+	TaskName                        string    `json:"taskName"`
+	TaskTypeID                      int       `json:"taskTypeID"`
+	PriorityID                      int       `json:"priorityID"`
+	DueDate                         time.Time `json:"dueDate"`
+	RequestedByObjectID             int       `json:"requestedByObjectID"`
+	RequestedByKeyID                int       `json:"requestedByKeyID"`
+	AccountID                       int       `json:"accountID"`
+	OrderID                         int       `json:"orderID"`
+	ProjectID                       int       `json:"projectID"`
+	MilestoneID                     int       `json:"milestoneID"`
+	TaskDesc                        string    `json:"taskDesc"`
+	AssignedToObjectID              int       `json:"assignedToObjectID"`
+	AssignedToKeyID                 int       `json:"assignedToKeyID"`
+	AssignToUserByDefault           bool      `json:"assignToUserByDefault"`
+	DeriveRequestedByUsingEmailFrom bool      `json:"deriveRequestedByUsingEmailFrom"`
+	RequestedByEmail                string    `json:"requestedByEmail"`
+	StatusID                        int       `json:"statusID"`
+}
+
+//TaskCreateResult is the return value when creating a task
+type TaskCreateResult struct {
+	TaskID             int       `json:"taskID,omitempty"`
+	PriorityID         int       `json:"priorityID,omitempty"`
+	StartDate          Timestamp `json:"startDate,omitempty"`
+	DueDate            Timestamp `json:"dueDate,omitempty"`
+	DateCreated        string    `json:"dateCreated,omitempty"`
+	AssignedToObjectID int       `json:"assignedToObjectID,omitempty"`
+	AssignedToKeyID    int       `json:"assignedToKeyID,omitempty"`
+}
+
 // GetByID (Tasks) returns a single Task
 func (*tasksFunc) GetByID(taskID int) (TasksAPIResult, error) {
 
@@ -67,5 +103,30 @@ func (*tasksFunc) GetByID(taskID int) (TasksAPIResult, error) {
 	if err != nil {
 		return TasksAPIResult{}, err
 	}
+	return r, nil
+}
+
+// Create (CustomerTask) Creates an existing task in the system.
+func (*tasksFunc) Create(task TaskCreateParams) (TaskCreateResult, error) {
+
+	err := stv.validateAccessToken()
+	if err != nil {
+		return TaskCreateResult{}, err
+	}
+	ctx, done := context.WithCancel(stv.Context)
+	defer done()
+	client := resty.New()
+	resp, err := client.R().
+		SetContext(ctx).
+		SetAuthToken(stv.Token.AccessToken).
+		SetHeaders(jsonHeaders()).
+		SetBody(task).
+		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/customer-assets"))
+	if resp.StatusCode() != 200 || err != nil {
+		return TaskCreateResult{}, fmt.Errorf("Response Code: %d, Error: %+v", resp.StatusCode(), err)
+	}
+
+	var r TaskCreateResult
+	json.Unmarshal([]byte(resp.Body()), &r)
 	return r, nil
 }
