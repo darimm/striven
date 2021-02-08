@@ -121,8 +121,8 @@ func (*tasksFunc) Create(task TaskCreateParams) (TaskCreateResult, error) {
 		SetAuthToken(stv.Token.AccessToken).
 		SetHeaders(jsonHeaders()).
 		SetBody(task).
-		Post(fmt.Sprintf("%s%s", StrivenURL, "/v1/Tasks/create"))
-	if resp.StatusCode() != 200 || err != nil {
+		Post(fmt.Sprintf("%s%s", StrivenURL, "v1/Tasks/create"))
+	if resp.StatusCode() != 201 || err != nil {
 		return TaskCreateResult{}, fmt.Errorf("Response Code: %d, Error: %+v", resp.StatusCode(), err)
 	}
 
