@@ -61,23 +61,23 @@ type TasksAPIResult struct {
 
 //TaskCreateParams are the parameters for creating a task in Striven
 type TaskCreateParams struct {
-	TaskName                        string    `json:"taskName,omitempty"`
-	TaskTypeID                      int       `json:"taskTypeID,omitempty"`
-	PriorityID                      int       `json:"priorityID,omitempty"`
-	DueDate                         time.Time `json:"dueDate,omitempty"`
-	RequestedByObjectID             int       `json:"requestedByObjectID,omitempty"`
-	RequestedByKeyID                int       `json:"requestedByKeyID,omitempty"`
-	AccountID                       int       `json:"accountID,omitempty"`
-	OrderID                         int       `json:"orderID,omitempty"`
-	ProjectID                       int       `json:"projectID,omitempty"`
-	MilestoneID                     int       `json:"milestoneID,omitempty"`
-	TaskDesc                        string    `json:"taskDesc,omitempty"`
-	AssignedToObjectID              int       `json:"assignedToObjectID,omitempty"`
-	AssignedToKeyID                 int       `json:"assignedToKeyID,omitempty"`
-	AssignToUserByDefault           bool      `json:"assignToUserByDefault,omitempty"`
-	DeriveRequestedByUsingEmailFrom bool      `json:"deriveRequestedByUsingEmailFrom,omitempty"`
-	RequestedByEmail                string    `json:"requestedByEmail,omitempty"`
-	StatusID                        int       `json:"statusID,omitempty"`
+	TaskName                        *string    `json:"taskName,omitempty"`
+	TaskTypeID                      *int       `json:"taskTypeID,omitempty"`
+	PriorityID                      *int       `json:"priorityID,omitempty"`
+	DueDate                         *time.Time `json:"dueDate,omitempty"`
+	RequestedByObjectID             *int       `json:"requestedByObjectID,omitempty"`
+	RequestedByKeyID                *int       `json:"requestedByKeyID,omitempty"`
+	AccountID                       *int       `json:"accountID,omitempty"`
+	OrderID                         *int       `json:"orderID,omitempty"`
+	ProjectID                       *int       `json:"projectID,omitempty"`
+	MilestoneID                     *int       `json:"milestoneID,omitempty"`
+	TaskDesc                        *string    `json:"taskDesc,omitempty"`
+	AssignedToObjectID              *int       `json:"assignedToObjectID,omitempty"`
+	AssignedToKeyID                 *int       `json:"assignedToKeyID,omitempty"`
+	AssignToUserByDefault           *bool      `json:"assignToUserByDefault,omitempty"`
+	DeriveRequestedByUsingEmailFrom *bool      `json:"deriveRequestedByUsingEmailFrom,omitempty"`
+	RequestedByEmail                *string    `json:"requestedByEmail,omitempty"`
+	StatusID                        *int       `json:"statusID,omitempty"`
 }
 
 //TaskCreateResult is the return value when creating a task
