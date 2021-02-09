@@ -107,6 +107,9 @@ func (*tasksFunc) GetByID(taskID int) (TasksAPIResult, error) {
 }
 
 // Create (CustomerTask) Creates an existing task in the system.
+// If you wish to assign to a Pool, you need to set AssignedToObjectID 30
+// For an Employee it's AssignedToObjectID 4, for a Contact it's AssignedToObjectID 1
+// Then the appropriate employee/pool/contact ID is set as AssignedToKeyID
 func (*tasksFunc) Create(task TaskCreateParams) (TaskCreateResult, error) {
 
 	err := stv.validateAccessToken()
